@@ -21,21 +21,21 @@ git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 
 ### Setup Hardat
 
-[Hardat](https://hardhat.org/hardhat-runner/docs/getting-started#quick-start) is a framework that will help us to :
+[Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started#quick-start) is a framework that will help us to :
 - compile our smart contract
 - test our smart contract
 - deploy our smart contract
 
 If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardat in term of features.
 
-Install hardat 
+Install Hardhat 
 ```sh
-npm install --save-dev hardhat
+yarn workspace src add -D hardhat
 ```
 
-Then init hardat 
+Then init hardhat in your `package/src` folder 
 ```sh
-npx hardhat
+yarn hardhat
 ```
 
 This will create folders :
@@ -46,20 +46,20 @@ This will create folders :
 
 - `test`: unit test sources,
 
-- `hardat-config.js` : config file for Hardat
+- `hardhat-config.js` : config file for Hardhat
 
-Finally, run `npx hardhat node` and this should print out a bunch of accounts.
+Finally, run `yarn hardhat node` and this should print out a bunch of accounts.
 
-Hardat will generate some files for you, to make sure everything is working, run:
+Hardhat will generate some files for you, to make sure everything is working, run:
 
 ```sh
- npx hardhat compile
+ yarn hardhat compile
 ```
 
 Then run:
 
 ```sh
- npx hardhat test
+ yarn hardhat test
 ```
 
 You should see a bunch of tests succeeded 🎉

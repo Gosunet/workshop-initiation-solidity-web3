@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Paytone One';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: 'Paytone One';
+}
+
+*,
+:before,
+:after {
+  margin: 0;
+  box-sizing: border-box;
+}
