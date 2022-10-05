@@ -10,37 +10,64 @@ analytics account: Google Analytics ID
 # Initiation solidity and Web3.0
 
 
+
 ## Init your project 🔨
 Duration: 0:05:00
 
-### Info Boxes
-Plain Text followed by green and yellow info boxes 
+If you have not done it yet, you can start by cloning this repo
+```sh
+git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
+```
 
-Negative
-: This will appear in a yellow info box.
+### Setup Hardat
 
-Positive
-: This will appear in a green info box.
+[Hardat](https://hardhat.org/hardhat-runner/docs/getting-started#quick-start) is a framework that will help us to :
+- compile our smart contract
+- test our smart contract
+- deploy our smart contract
 
-You created info boxes!
+If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardat in term of features.
 
-### Bullets
-Plain Text followed by bullets
-* Hello
-* CodeLab
-* World
+Install hardat 
+```sh
+npm install --save-dev hardhat
+```
 
-You created bullets!
+Then init hardat 
+```sh
+npx hardhat
+```
 
-### Numbered List
-1. List
-1. Using
-1. Numbers
+This will create folders :
 
-You created a numbered list!
+- `contracts` : folder for our solidity files,
+
+- `scripts` : a directory that contain scripts to handle deploy, run, ...
+
+- `test`: unit test sources,
+
+- `hardat-config.js` : config file for Hardat
+
+Finally, run `npx hardhat node` and this should print out a bunch of accounts.
+
+Hardat will generate some files for you, to make sure everything is working, run:
+
+```sh
+ npx hardhat compile
+```
+
+Then run:
+
+```sh
+ npx hardhat test
+```
+
+You should see a bunch of tests succeeded 🎉
+
+You can now delete Lock.js under test, deploy.js under scripts and Lock.sol under contracts. (not the folder !)
 
 ## Write your first smart contract 🆕
-Duration: 0:30:00
+Duration: 0:20:00
 
 
 ## Test it !
@@ -48,6 +75,10 @@ Duration: 0:20:00
 
 
 ## Deploy your smart contract 🚀
+Duration: 0:20:00
+
+
+## Create a contract that mints NFTs 🦆
 Duration: 0:20:00
 
 
