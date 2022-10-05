@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-10-05T11:12:30+02:00",
+  "id": "inititation-solidity-web3",
+  "duration": 135,
+  "title": "Initiation solidity and Web3.0",
+  "summary": "Initiation solidity et web3",
+  "source": "codelab.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "codelab",
+    "markdown"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/Gosunet/workshop-initiation-solidity-web3",
+  "ga": "Google Analytics ID",
+  "url": "inititation-solidity-web3"
+}
