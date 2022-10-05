@@ -1,0 +1,11 @@
+node_modules
+.idea
+PDF
+dist
+.DS_Store
+/build
+*.iml
+npm-debug.log
+.history/*
+**/Betting.json
+**/Migrations.json
