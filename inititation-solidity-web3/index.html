@@ -32,40 +32,40 @@
 <pre><code language="language-sh" class="language-sh">git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 </code></pre>
 <h2 is-upgraded>Setup Hardat</h2>
-<p><a href="https://hardhat.org/hardhat-runner/docs/getting-started#quick-start" target="_blank">Hardat</a> is a framework that will help us to :</p>
+<p><a href="https://hardhat.org/hardhat-runner/docs/getting-started#quick-start" target="_blank">Hardhat</a> is a framework that will help us to :</p>
 <ul>
 <li>compile our smart contract</li>
 <li>test our smart contract</li>
 <li>deploy our smart contract</li>
 </ul>
-<p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a></p>
-<p>Install hardat <code>npm install --save-dev hardhat</code></p>
-<p>Then init hardat with <code>npx hardhat</code></p>
-<h2 is-upgraded>Info Boxes</h2>
-<p>Plain Text followed by green and yellow info boxes</p>
-<p>Negative : This will appear in a yellow info box.</p>
-<p>Positive : This will appear in a green info box.</p>
-<p>You created info boxes!</p>
-<h2 is-upgraded>Bullets</h2>
-<p>Plain Text followed by bullets</p>
+<p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardat in term of features.</p>
+<p>Install Hardhat</p>
+<pre><code language="language-sh" class="language-sh">yarn workspace src add -D hardhat
+</code></pre>
+<p>Then init hardhat in your <code>package/src</code> folder</p>
+<pre><code language="language-sh" class="language-sh">yarn hardhat
+</code></pre>
+<p>This will create folders :</p>
 <ul>
-<li>Hello</li>
-<li>CodeLab</li>
-<li>World</li>
+<li><code>contracts</code> : folder for our solidity files,</li>
+<li><code>scripts</code> : a directory that contain scripts to handle deploy, run, ...</li>
+<li><code>test</code>: unit test sources,</li>
+<li><code>hardhat-config.js</code> : config file for Hardhat</li>
 </ul>
-<p>You created bullets!</p>
-<h2 is-upgraded>Numbered List</h2>
-<ol type="1">
-<li>List</li>
-<li>Using</li>
-<li>Numbers</li>
-</ol>
-<p>You created a numbered list!</p>
+<p>Finally, run <code>yarn hardhat node</code> and this should print out a bunch of accounts.</p>
+<p>Hardhat will generate some files for you, to make sure everything is working, run:</p>
+<pre><code language="language-sh" class="language-sh"> yarn hardhat compile
+</code></pre>
+<p>Then run:</p>
+<pre><code language="language-sh" class="language-sh"> yarn hardhat test
+</code></pre>
+<p>You should see a bunch of tests succeeded 🎉</p>
+<p>You can now delete Lock.js under test, deploy.js under scripts and Lock.sol under contracts. (not the folder !)</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Write your first smart contract 🆕" duration="30">
+      <google-codelab-step label="Write your first smart contract 🆕" duration="20">
         
 
       </google-codelab-step>
@@ -76,6 +76,11 @@
       </google-codelab-step>
     
       <google-codelab-step label="Deploy your smart contract 🚀" duration="20">
+        
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a contract that mints NFTs 🦆" duration="20">
         
 
       </google-codelab-step>
