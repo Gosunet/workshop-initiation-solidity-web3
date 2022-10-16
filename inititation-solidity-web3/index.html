@@ -31,17 +31,18 @@
         <p>If you have not done it yet, you can start by cloning this repo</p>
 <pre><code language="language-sh" class="language-sh">git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 </code></pre>
-<h2 is-upgraded>Setup Hardat</h2>
-<p><a href="https://hardhat.org/hardhat-runner/docs/getting-started#quick-start" target="_blank">Hardhat</a> is a framework that will help us to :</p>
+<h2 is-upgraded>Setup Hardhat</h2>
+<p><a href="https://hardhat.org/hardhat-runner/docs/getting-started#quick-start" target="_blank">Hardhat</a> is a framework that will help us to:</p>
 <ul>
 <li>compile our smart contract</li>
 <li>test our smart contract</li>
 <li>deploy our smart contract</li>
 </ul>
-<p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardat in term of features.</p>
+<p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardhat in term of features.</p>
 <p>Install Hardhat</p>
 <pre><code language="language-sh" class="language-sh">yarn workspace src add -D hardhat
 </code></pre>
+<p>if you need to install yarn before <code>npm install --global yarn</code></p>
 <p>Then init hardhat in your <code>package/src</code> folder</p>
 <pre><code language="language-sh" class="language-sh">yarn hardhat
 </code></pre>
@@ -60,13 +61,67 @@
 <pre><code language="language-sh" class="language-sh"> yarn hardhat test
 </code></pre>
 <p>You should see a bunch of tests succeeded 🎉</p>
-<p>You can now delete Lock.js under test, deploy.js under scripts and Lock.sol under contracts. (not the folder !)</p>
+<p>You can now delete Lock.js under test, deploy.js under scripts and Lock.sol under contracts. (not the folder!)</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Write your first smart contract 🆕" duration="20">
-        
+        <p>Now that we have setup Hardhat let&#39;s create our first smart contract!<br> To do so let&#39;s create a new file <code>MyEpicSmartContract.sol</code> under <code>contracts</code> folder.<br> Be careful file structure is important!</p>
+<p>Copy this into your newly created file</p>
+<pre><code language="language-javascript" class="language-javascript">// SPDX-License-Identifier: UNLICENSED
+
+pragma solidity ^0.8.17;
+
+import &#34;hardhat/console.sol&#34;;
+
+contract MyEpicSmartContract {
+    constructor() {
+        console.log(&#34;Hello World !&#34;);
+    }
+}
+</code></pre>
+<p>If you use visual code you can install the <a href="https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project" target="_blank">solidity extension</a> for syntax highlighting.</p>
+<p>Congratulation you have officialy write your first smart contract 🥳<br> Easy no?</p>
+<p>Next step is to compile our smart contract, to do so run <code>yarn hardhat compile</code>.</p>
+<p>Now it&#39;s our turn to work!<br> Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. Then another function <code>sayHello</code> that will simply use the name you just set and print <code>Hello ${name}</code> in console.<br> Here is a link to the <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">solidity doc</a> to help you with that.</p>
+<h2 is-upgraded>A script to run our contract</h2>
+<p>Hardhat allow us to deploy our smart contract in a local blockchain, and it allow us to do it very easily.</p>
+<p>We juste have to write a small script to do that, so let&#39;s go!</p>
+<p>Create a file <code>run.mjs</code> under <code>scripts</code>.</p>
+<pre><code language="language-javascript" class="language-javascript">const contractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
+const contract = await contractFactory.deploy();
+await contract.deployed();
+console.log(&#34;Contract deployed to:&#34;, contract.address);
+
+// Call the function.
+let txn = await contract.setName(&#34;Guillaume&#34;)
+// Wait for it to be finished.
+await txn.wait()
+// Call another function
+await contract.sayHello()
+</code></pre>
+<p>To call your script just run <code>yarn hardhat run scripts/run.mjs</code>.</p>
+<p>You should get something like that!</p>
+<pre><code language="language-bash" class="language-bash">Hello World !
+Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+Hello Guillaume
+</code></pre>
+<p><code>0x5FbDB2315678afecb367f032d93F642f64180aa3</code> here is the contract adresse in our local blockchain where the contract was deployed.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a contract that mints NFTs 🦆" duration="20">
+        <p>It&#39;s all fun and stuff but our contract is not doing anything usefull for our use case.</p>
+<p>Let&#39;s change that! What we want is a contract that enable us to <code>mint</code> an NFT. Mint just mean to create our NFT in the blockchain.</p>
+<p>But what&#39;s an NFT ? On the EVM compatible blockchain an NFT is &#34;just&#34; an <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">ERC-721 token</a>, that mean that our smart contract should implement the ERC-721 interface!</p>
+<p>That&#39;s a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! <a href="https://github.com/OpenZeppelin" target="_blank">OpenZeppelin</a> is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).</p>
+<p>We first need to add the openzeppelin dependency.</p>
+<pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts
+</code></pre>
+<p>import &#34;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&#34;; import &#34;@openzeppelin/contracts/utils/Counters.sol&#34;;</p>
+
 
       </google-codelab-step>
     
@@ -76,12 +131,9 @@
       </google-codelab-step>
     
       <google-codelab-step label="Deploy your smart contract 🚀" duration="20">
-        
+        <h2 is-upgraded>Get a Wallet ! And some ETH 💰</h2>
+<h2 is-upgraded>Deploy</h2>
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Create a contract that mints NFTs 🦆" duration="20">
-        
 
       </google-codelab-step>
     
