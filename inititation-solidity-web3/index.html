@@ -31,6 +31,11 @@
         <p>If you have not done it yet, you can start by cloning this repo</p>
 <pre><code language="language-sh" class="language-sh">git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 </code></pre>
+<p>If we take a look at the structure, we can notice it&#39;s a monorepo using yarn workspaces.</p>
+<p>At the root, you can see a folder name <code>packages</code>. In this folder we have separated packages.</p>
+<p>We will focus on two packages today: <code>app</code> and <code>hardhat</code>.</p>
+<p>The first contains our frontend, and the second will contains our contract.</p>
+<p>Now we&#39;ve seen that, let&#39;s start building! 🚀</p>
 <h2 is-upgraded>Setup Hardhat</h2>
 <p><a href="https://hardhat.org/hardhat-runner/docs/getting-started#quick-start" target="_blank">Hardhat</a> is a framework that will help us to:</p>
 <ul>
@@ -137,8 +142,94 @@ Hello Guillaume
 
       </google-codelab-step>
     
-      <google-codelab-step label="Configure your front to connect a Wallet 💰" duration="30">
-        
+      <google-codelab-step label="Frontend setup ⚙️" duration="5">
+        <p>Ok, we worked on a smart contract. It&#39;s a lot of fun, but we have only a part of the job. What is the point of having a smart contract if nobody use it, right?</p>
+<p>That&#39;s why we are now building a frontend. Not all the frontend, since we just want to build a web3 integration on top of the <a href="https://pimpmyduck.zenika.com/" target="_blank">existing CrytoDuck made but our Zenika Teammate</a>.</p>
+<p>The frontend is made in React, but don&#39;t worry if you don&#39;t know. We built for you the base components, you will just filled them. Doing that, we can focus on what really matter here: interacting with the blockchain ⛓</p>
+<p>As we seen in introduction, we will work on <code>app</code> package.</p>
+<p>First, let&#39;s start the front with <code>yarn start</code>. The interface should open on <code>http://localhost:3000/</code>, and you already have an functional application to customize a duck, how cool is that?</p>
+<p>What we want to do in this interface is:</p>
+<ul>
+<li>Connect our wallet to be able to interact with the wallet,</li>
+<li>Add a <code>mint</code> button to let the user create an NFT from his custom duck.</li>
+</ul>
+<p>To interact with the blockchain, we need few additional dependencies, let&#39;s install them, and them build some great stuff ✨</p>
+<p>In the <code>app</code> folder, do the following command:</p>
+<pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector web3 
+</code></pre>
+<p>Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.</p>
+<p>Packages under <code>@web3-react/*</code> are abstractions on top of the <code>web3</code> library. It give us friendly tools to get a reactive state in react components.</p>
+<p>Now your probably want to yell at us: &#34;GIVE ME SOME CODE!&#34;. We&#39;re getting there, don&#39;t worry 😉</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configure your front to connect a Wallet 💰" duration="25">
+        <h2 is-upgraded>Context instantiation</h2>
+<p>As we saw, you add some dependencies to interact with the blockchain. This dependency needs to instantiate a <code>Context</code> to share the state with the whole app. So the first modification we have to make is in the <code>App.ts</code> component.</p>
+<p>First import the context <code>Provider</code> and the web3 library:</p>
+<pre><code language="language-tsx" class="language-tsx">import { Web3ReactProvider } from &#39;@web3-react/core&#39;
+import Web3 from &#39;web3&#39;
+</code></pre>
+<p>Then, wrap the whole JSX code in the <code>return</code> block by the web3 provider:</p>
+<pre><code language="language-tsx" class="language-tsx">  // ...
+  return (
+    &lt;Web3ReactProvider getLibrary={(provider) =&gt; new Web3(provider)}&gt;
+      &lt;div className={styles.app}&gt;
+        {/* ... */}
+     &lt;/div&gt;
+    &lt;/Web3ReactProvider&gt;
+  )
+</code></pre>
+<p>Note the provider take a property (commonly called <code>prop</code> in react) <code>getLibrary</code>.<br> It is mandatory to initiate the web3 library we want to use. This make <code>react-web3</code> agnostic of your client library.<br> Here, we pass a function to initialize <code>Web3</code>, the library commonly used.</p>
+<p>Great! Now we are able to discuss with the wallet in our React components!</p>
+<h2 is-upgraded>Connect to a wallet</h2>
+<p>The next code to update will be the <code>Web3WalletConnector</code>. This component will configure handle all the connection logic. In that, we will find:</p>
+<ul>
+<li>The chain configuration,</li>
+<li>Displaying a connection button the user is not connected,</li>
+<li>or a disconnect button for the opposite case,</li>
+<li>ask the user to change his wallet network if it is connected to the wrong chain.</li>
+</ul>
+<p>Let&#39;s see what we have for now.</p>
+<p>You can see some constants already declared: <code>AVALANCHE_TESTNET_PARAMS</code> and <code>ETHEREUM_TESTNET_PARAMS</code>. Those variable are network configuration. We&#39;ve put them for you, but know you can find them on <a href="https://chainlist.org/" target="_blank">chainlist</a>.</p>
+<p>Then, we have a empty component. For now, it does not contain any logic, but some UI. Here we can start working 💪.</p>
+<p>The fist step here is to remove the <code>return null</code> statement. You should now see the connect button display on the interface.</p>
+<p>We&#39;ve put a static variable <code>active</code> to <code>false</code>. We want to get this value from the wallet instead. For that, we will call the <code>useWebReact</code> hook. This hook return an object containing an <code>active</code> property. Perfect, this is exactly what we want!</p>
+<pre><code language="language-tsx" class="language-tsx">  const { active } = useWeb3React&lt;Web3&gt;()
+</code></pre>
+<p>Ok, now we know if we are connected directly from the wallet, nice. But, as we are not connected, we want to handle the connection. For that, the goal is to fill the <code>connect</code> function.</p>
+<p>From the hook, we will get an additional property: <code>activate</code></p>
+<pre><code language="language-tsx" class="language-tsx">  const { active, activate } = useWeb3React&lt;Web3&gt;()
+</code></pre>
+<p>If we take a look at the activate signature, we can see it takes an argument <code>injected</code>. WTF is that?! 😱</p>
+<p>It is informations about the chains our application is able to use. Chains informations make sense now!</p>
+<p>We are going to declare a new variable <code>injected</code>, by instantiating a new <code>InjectedConnector</code>.<br> The constructor take an object, with the property <code>supportedChainIds</code>.</p>
+<pre><code language="language-tsx" class="language-tsx">const injected = new InjectedConnector({
+  supportedChainIds: [
+    parseInt(ETHEREUM_TESTNET_PARAMS.chainId, 16),
+    parseInt(AVALANCHE_TESTNET_PARAMS.chainId, 16),
+  ],
+})
+</code></pre>
+<p>Because this variable is not reactive, it can be defined outside our component.</p>
+<p>Now we have all our <code>activate</code> dependencies, we can call our function in <code>connect</code> function.</p>
+<pre><code language="language-tsx" class="language-tsx">  async function connect() {
+    await activate(injected)
+  }
+</code></pre>
+<p>Time to test!</p>
+<h2 is-upgraded>Connection testing</h2>
+<p>To test a wallet connection, you need to first have a Wallet.<br> So if you don&#39;t already have on, download the <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr" target="_blank">metamask extension on chrome web store</a>.</p>
+<p>You will be guided on the setup phase by Metamask. When this part is done, switch to Goerly network. It is a testing network.</p>
+<p>Now you&#39;re all set, let&#39;s go clicking our connect button. You should see a pop-up asking you to approve the connection to our website. If you accept, you should then see your address instead of the login button.</p>
+<p>Awesome!</p>
+<p>If you wonder what&#39;s under the button, you can look for <code>Web3WalletButton</code>.<br> It calls the hook <code>useWeb3React</code>, and get the connected address, and the active props.</p>
+<p>From the <code>active</code> props, we decide what we display: a truncated address or a connection button.</p>
+<p>The parent component <code>Web3WalletConnector</code> display an additional logout button when we are connected.</p>
+<p>We still have to complete the disconnect behavior.</p>
+<p>From the <code>useWeb3React</code>, get an other property: <code>disconnect</code>. It is a function. Call it from the disconnect function, and we are good! Good Job! 🙌</p>
+
 
       </google-codelab-step>
     

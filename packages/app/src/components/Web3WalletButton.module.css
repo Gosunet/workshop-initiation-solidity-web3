@@ -1,0 +1,15 @@
+.connector {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+  z-index: 5;
+}
+
+.address {
+  margin-right: 20px;
+  color: #333;
+}
+
+.addressHex {
+  color: #b51432;
+}

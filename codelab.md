@@ -31,6 +31,17 @@ If you have not done it yet, you can start by cloning this repo
 git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 ```
 
+If we take a look at the structure, we can notice it's a monorepo using yarn workspaces.  
+
+At the root, you can see a folder name `packages`. In this folder we have separated packages.
+
+We will focus on two packages today: `app` and `hardhat`.
+
+The first contains our frontend, and the second will contains our contract.
+
+Now we've seen that, let's start building! 🚀
+
+
 ### Setup Hardhat
 
 [Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started#quick-start) is a framework that will help us to:
@@ -188,12 +199,182 @@ Duration: 0:20:00
 
 
 
-## Configure your front to connect a Wallet 💰
-Duration: 0:30:00
+## Frontend setup ⚙️
+Duration: 0:05:00
 
+Ok, we worked on a smart contract. It's a lot of fun, but we have only a part of the job.
+What is the point of having a smart contract if nobody use it, right?
+
+That's why we are now building a frontend. Not all the frontend, since we just want to build a web3 integration
+on top of the [existing CrytoDuck made but our Zenika Teammate](https://pimpmyduck.zenika.com/).
+
+The frontend is made in React, but don't worry if you don't know. 
+We built for you the base components, you will just filled them. Doing that, we can focus 
+on what really matter here: interacting with the blockchain ⛓
+
+As we seen in introduction, we will work on `app` package.
+
+First, let's start the front with `yarn start`. 
+The interface should open on `http://localhost:3000/`, and you already have an functional application
+to customize a duck, how cool is that?
+
+What we want to do in this interface is:
+
+- Connect our wallet to be able to interact with the wallet,
+- Add a `mint` button to let the user create an NFT from his custom duck. 
+
+To interact with the blockchain, we need few additional dependencies, let's install them,
+and them build some great stuff ✨
+
+In the `app` folder, do the following command:
+
+```sh
+yarn add @web3-react/core @web3-react/injected-connector web3 
+```
+
+Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.
+
+Packages under `@web3-react/*` are abstractions on top of the `web3` library. It give us 
+friendly tools to get a reactive state in react components.
+
+Now your probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
+
+## Configure your front to connect a Wallet 💰
+Duration: 0:25:00
+
+### Context instantiation
+
+As we saw, you add some dependencies to interact with the blockchain. 
+This dependency needs to instantiate a `Context` to share the state with the whole app.
+So the first modification we have to make is in the `App.ts` component. 
+
+First import the context `Provider` and the web3 library:
+
+```tsx
+import { Web3ReactProvider } from '@web3-react/core'
+import Web3 from 'web3'
+```
+
+Then, wrap the whole JSX code in the `return` block by the web3 provider:
+
+```tsx
+  // ...
+  return (
+    <Web3ReactProvider getLibrary={(provider) => new Web3(provider)}>
+      <div className={styles.app}>
+        {/* ... */}
+     </div>
+    </Web3ReactProvider>
+  )
+```
+
+Note the provider take a property (commonly called `prop` in react) `getLibrary`.  
+It is mandatory to initiate the web3 library we want to use. This make `react-web3` agnostic of your
+client library.  
+Here, we pass a function to initialize `Web3`, the library commonly used.
+
+Great! Now we are able to discuss with the wallet in our React components!
+
+### Connect to a wallet
+
+The next code to update will be the `Web3WalletConnector`.
+This component will configure handle all the connection logic. In that, we will find: 
+
+- The chain configuration,
+- Displaying a connection button the user is not connected,
+- or a disconnect button for the opposite case,
+- ask the user to change his wallet network if it is connected to the wrong chain.
+
+Let's see what we have for now. 
+
+You can see some constants already declared: `AVALANCHE_TESTNET_PARAMS` and `ETHEREUM_TESTNET_PARAMS`.
+Those variable are network configuration. We've put them for you, but know you can find them on [chainlist](https://chainlist.org/).
+
+Then, we have a empty component. For now, it does not contain any logic, but some UI. 
+Here we can start working 💪.
+
+The fist step here is to remove the `return null` statement. You should now see the connect button display on the 
+interface.
+
+We've put a static variable `active` to `false`. We want to get this value from the wallet instead. 
+For that, we will call the `useWebReact` hook. This hook return an object containing an `active` property. 
+Perfect, this is exactly what we want! 
+
+```tsx
+  const { active } = useWeb3React<Web3>()
+```
+
+Ok, now we know if we are connected directly from the wallet, nice.
+But, as we are not connected, we want to handle the connection. 
+For that, the goal is to fill the `connect` function.  
+
+From the hook, we will get an additional property: `activate`
+
+```tsx
+  const { active, activate } = useWeb3React<Web3>()
+```
+
+If we take a look at the activate signature, we can see it takes an argument `injected`. 
+WTF is that?! 😱
+
+It is informations about the chains our application is able to use. 
+Chains informations make sense now!
+
+We are going to declare a new variable `injected`, by instantiating a new `InjectedConnector`.  
+The constructor take an object, with the property `supportedChainIds`.
+
+```tsx
+const injected = new InjectedConnector({
+  supportedChainIds: [
+    parseInt(ETHEREUM_TESTNET_PARAMS.chainId, 16),
+    parseInt(AVALANCHE_TESTNET_PARAMS.chainId, 16),
+  ],
+})
+```
+
+Because this variable is not reactive, it can be defined outside our component.
+
+Now we have all our `activate` dependencies, we can call our function in `connect` function.
+
+```tsx
+  async function connect() {
+    await activate(injected)
+  }
+```
+
+Time to test!
+
+### Connection testing
+
+To test a wallet connection, you need to first have a Wallet.  
+So if you don't already have on, download the [metamask extension on 
+chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
+
+You will be guided on the setup phase by Metamask. When this part is done,
+switch to Goerly network. It is a testing network. 
+
+Now you're all set, let's go clicking our connect button. 
+You should see a pop-up asking you to approve the connection to our website.
+If you accept, you should then see your address instead of the login button. 
+
+Awesome!
+
+If you wonder what's under the button, you can look for `Web3WalletButton`.  
+It calls the hook `useWeb3React`, and get the connected address, and the active props.
+
+From the `active` props, we decide what we display: a truncated address or a connection button.
+
+The parent component `Web3WalletConnector` display an additional logout button when we are connected.
+
+We still have to complete the disconnect behavior. 
+
+From the `useWeb3React`, get an other property: `disconnect`. It is a function. Call it from the 
+disconnect function, and we are good! Good Job! 🙌
 
 ## Integrate and interact with your smart contract
 Duration: 0:15:00
+
+
 
 
 ## Bonus
