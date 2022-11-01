@@ -120,18 +120,18 @@ Hello Guillaume
       <google-codelab-step label="Create a contract that mints NFTs 🦆" duration="20">
         <p>It&#39;s all fun and stuff but our contract is not doing anything usefull for our use case.</p>
 <p>Let&#39;s change that! What we want is a contract that enable us to <code>mint</code> an NFT. Mint just mean to create our NFT in the blockchain.</p>
-<p>But what&#39;s an NFT ? On the EVM compatible blockchain an NFT is &#34;just&#34; an <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">ERC-721 token</a>, that mean that our smart contract should implement the ERC-721 interface!</p>
+<p>But what&#39;s an NFT? On the EVM compatible blockchain an NFT is &#34;just&#34; an <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">ERC-721 token</a>, that mean that our smart contract should implement the ERC-721 interface!</p>
 <p>That&#39;s a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! <a href="https://github.com/OpenZeppelin" target="_blank">OpenZeppelin</a> is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).</p>
 <p>We first need to add the openzeppelin dependency.</p>
 <pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts
 </code></pre>
-<p>Then import them in our contract like that</p>
+<p>Then import them in our contract like that:</p>
 <pre><code language="language-javascript" class="language-javascript">import &#34;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&#34;;
 import &#34;@openzeppelin/contracts/utils/Counters.sol&#34;;
 </code></pre>
 <p>As you can see we also import <code>Counters.sol</code>, this will help us to generate our NFT id.</p>
 <p>Now that we have imported the contract <code>ERC721URIStorage</code> what we need to do now is to make our contract inherit from it.</p>
-<p>To do that it&#39;s pretty simple !</p>
+<p>To do that it&#39;s pretty simple!</p>
 <pre><code language="language-javascript" class="language-javascript">// We inherit the contract we imported. This means we&#39;ll have access
 // to the inherited contract&#39;s methods.
 contract MyEpicSmartContract is ERC721URIStorage {
@@ -143,19 +143,19 @@ contract MyEpicSmartContract is ERC721URIStorage {
 </code></pre>
 <p>You will see that here we need to call the <code>ERC721</code> contract constructor with two string, one for the name of our NFT token, and the other one for the symbol of our collection.</p>
 <p>Feel free to name it as you want 😉</p>
-<p>Now we can use the <code>ERC721</code> contract method !<br> Let&#39;s create our mehtode that we will call to create our NFT that will represente our custom duck.<br> We don&#39;t want to store the whole duck SVG in our contract because storage in the blockchain cost money 💰 so we will only store the url to access to our duck SVG.</p>
+<p>Now we can use the <code>ERC721</code> contract method!<br> Let&#39;s create our mehtode that we will call to create our NFT that will represente our custom duck.<br> We don&#39;t want to store the whole duck SVG in our contract because storage in the blockchain cost money 💰 so we will only store the url to access to our duck SVG.</p>
 <p>Remember that data in the blockchain are immutable, this is why it&#39;s important that our url will be accessible FOREVER ! That&#39;s why it&#39;s strongly recommended to stare our image in a decentralized store file systeme like IPFS.</p>
 <pre><code language="language-javascript" class="language-javascript">function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
 </code></pre>
 <p>Each of our NFT will need an unique ID to do that we will use the <code>Counters.sol</code> we have imported.</p>
-<p>Add this in your contract</p>
+<p>Add this in your contract:</p>
 <pre><code language="language-javascript" class="language-javascript">using Counters for Counters.Counter;
 Counters.Counter private _tokenIds;
 </code></pre>
-<p>Let&#39;s code our contract to mint an NFT now !</p>
-<p>First we want to get the currrent ID for your new NFT</p>
+<p>Let&#39;s code our contract to mint an NFT now!</p>
+<p>First we want to get the currrent ID for your new NFT.</p>
 <pre><code language="language-javascript" class="language-javascript">uint256 newItemId = _tokenIds.current();
 </code></pre>
 <p>Then we will mint our NFT calling the methode from the OpenZeppelin contract (all internal methode are prefix with an undescrore)</p>
@@ -179,14 +179,17 @@ string memory finalTokenUri = string(
     abi.encodePacked(&#34;data:application/json;base64,&#34;, json)
 );
 </code></pre>
-<p>Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end ?</p>
+<p>Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end?</p>
+<p>In order to be able to use the <code>Base64.encode</code> we need to add the Base64 library to our project.<br> Create a <code>libraries</code> package under <code>contracts</code> and create a file <code>Base64.sol</code> in it. You can find the content of this file here <a href="https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol" target="_blank">here</a>.<br> After that import the library in our contract file.</p>
+<pre><code language="language-javascript" class="language-javascript">import { Base64 } from &#34;./libraries/Base64.sol&#34;;
+</code></pre>
 <p>Finally we need to set the date to the NFT</p>
 <pre><code language="language-javascript" class="language-javascript">// Set the NFTs data.
 _setTokenURI(newItemId, finalTokenUri);
 
 console.log(&#34;An NFT w/ ID %s has been minted to %s&#34;, newItemId, msg.sender);
 </code></pre>
-<p>And increment the counter</p>
+<p>and increment the counter.</p>
 <pre><code language="language-javascript" class="language-javascript">// Increment the counter for when the next NFT is minted.
 _tokenIds.increment();
 </code></pre>
@@ -197,9 +200,8 @@ _tokenIds.increment();
 <p>and emit it at the end of your <code>makeAnEpicNFT</code> methode.</p>
 <pre><code language="language-javascript" class="language-javascript">emit NewNFTMinted(msg.sender, newItemId);
 </code></pre>
-<p>At the end you should get something like that</p>
+<p>At the end you should get something like that:</p>
 <pre><code language="language-javascript" class="language-javascript">function makeAnEpicNFT(string memory srcTokenUri) public {
-    require(balanceOf(msg.sender) == 0, &#39;Each address may only own one crypto duck&#39;);
     // Get the current tokenId, this starts at 0.
     uint256 newItemId = _tokenIds.current();
 
@@ -233,13 +235,68 @@ _tokenIds.increment();
     emit NewNFTMinted(msg.sender, newItemId);
   }
 </code></pre>
-<p>That&#39;s cool and stuff but how can I test my code ? Let&#39;s see that in the next chapter !</p>
+<p>That&#39;s cool and stuff but how can I test my code? Let&#39;s see that in the next chapter!</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Test it !" duration="20">
-        
+        <p>To test our smart contract we can update the <code>run.mjs</code> script to create our contract then call our new methode <code>makeAnEpicNft</code>.</p>
+<pre><code language="language-javascript" class="language-javascript">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
+const nftContract = await nftContractFactory.deploy();
+await nftContract.deployed();
+console.log(&#34;Contract deployed to:&#34;, nftContract.address);
+
+const svg = &#34;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#34;
+
+// Call the function.
+let txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+
+// Mint another NFT for fun.
+txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+</code></pre>
+<p>Here we used a png that is not store in an decentralized storage, but it&#39;s just for the test so it&#39;s not a probleme, you can used any png.</p>
+<p>Is it working? 🎉</p>
+<p>That&#39;s nice but I think we can have better test, can we unit test our contract? YES we can!</p>
+<p>Let&#39;s create a <code>MySmartContractSolTest.js</code> file under the package <code>test</code></p>
+<p>We can test that we emit our <code>NewNFTMinted</code> event. It&#39;s pretty much the same code that the <code>run.mjs</code> with some test at the end.</p>
+<p>Here is the code:</p>
+<pre><code language="language-javascript" class="language-javascript">const { expect } = require(&#39;chai&#39;)
+
+describe(&#39;MyEpicSmartContract contract&#39;, function () {
+  it(&#39;Should emit NewNFTMinted&#39;, async function () {
+    const [owner] = await ethers.getSigners()
+
+    const nftContractFactory = await hre.ethers.getContractFactory(
+      &#39;MyEpicSmartContract&#39;,
+    )
+    const nftContract = await nftContractFactory.deploy()
+    await nftContract.deployed()
+    console.log(&#39;Contract deployed to:&#39;, nftContract.address)
+
+    const svg = &#39;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#39;
+
+    await expect(nftContract.makeAnEpicNFT(svg))
+      .to.emit(nftContract, &#39;NewNFTMinted&#39;)
+      .withArgs(owner.address, 0) // first item
+  })
+})
+</code></pre>
+<p>We basically:</p>
+<ul>
+<li><code>deploy</code> the contract on hardate test chain</li>
+<li>call the methode <code>makeAnEpicNFT</code></li>
+<li>and expect an event to be fire, using chai <code>expect</code></li>
+</ul>
+<p>To run it:</p>
+<pre><code language="language-javascript" class="language-javascript">npx hardhat test
+</code></pre>
+<p>Awesome we now have our smart contract tested 😎</p>
+
 
       </google-codelab-step>
     

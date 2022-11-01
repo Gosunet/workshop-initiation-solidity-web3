@@ -170,7 +170,7 @@ It's all fun and stuff but our contract is not doing anything usefull for our us
 
 Let's change that! What we want is a contract that enable us to `mint` an NFT. Mint just mean to create our NFT in the blockchain.
 
-But what's an NFT ? On the EVM compatible blockchain an NFT is "just" an [ERC-721 token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), that mean that our smart contract should implement the ERC-721 interface!
+But what's an NFT? On the EVM compatible blockchain an NFT is "just" an [ERC-721 token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), that mean that our smart contract should implement the ERC-721 interface!
 
 That's a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).
 
@@ -180,7 +180,7 @@ We first need to add the openzeppelin dependency.
 yarn add @openzeppelin/contracts
 ```
 
-Then import them in our contract like that
+Then import them in our contract like that:
 
 ```javascript
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -191,7 +191,7 @@ As you can see we also import `Counters.sol`, this will help us to generate our 
 
 Now that we have imported the contract `ERC721URIStorage` what we need to do now is to make our contract inherit from it.
 
-To do that it's pretty simple !
+To do that it's pretty simple!
 
 ```javascript
 // We inherit the contract we imported. This means we'll have access
@@ -208,7 +208,7 @@ You will see that here we need to call the `ERC721` contract constructor with tw
 
 Feel free to name it as you want 😉
 
-Now we can use the `ERC721` contract method !  
+Now we can use the `ERC721` contract method!  
 Let's create our mehtode that we will call to create our NFT that will represente our custom duck.  
 We don't want to store the whole duck SVG in our contract because storage in the blockchain cost money 💰 so we will only store the url to access to our duck SVG. 
 
@@ -223,16 +223,16 @@ function makeAnEpicNFT(string memory srcTokenUri) public {
 
 Each of our NFT will need an unique ID to do that we will use the `Counters.sol` we have imported.
 
-Add this in your contract 
+Add this in your contract:
 
 ```javascript
 using Counters for Counters.Counter;
 Counters.Counter private _tokenIds;
 ```
 
-Let's code our contract to mint an NFT now !
+Let's code our contract to mint an NFT now!
 
-First we want to get the currrent ID for your new NFT
+First we want to get the currrent ID for your new NFT.
 
 ```javascript
 uint256 newItemId = _tokenIds.current();
@@ -266,7 +266,7 @@ string memory finalTokenUri = string(
 );
 ```
 
-Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end ? 
+Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end? 
 
 In order to be able to use the `Base64.encode` we need to add the Base64 library to our project.  
 Create a `libraries` package under `contracts` and create a file `Base64.sol` in it. You can find the content of this file here [here](https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol).  
@@ -286,7 +286,7 @@ _setTokenURI(newItemId, finalTokenUri);
 console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
 ```
 
-And increment the counter
+and increment the counter.
 
 ```javascript
 // Increment the counter for when the next NFT is minted.
@@ -307,11 +307,10 @@ and emit it at the end of your `makeAnEpicNFT` methode.
 emit NewNFTMinted(msg.sender, newItemId);
 ```
 
-At the end you should get something like that
+At the end you should get something like that:
 
 ```javascript
 function makeAnEpicNFT(string memory srcTokenUri) public {
-    require(balanceOf(msg.sender) == 0, 'Each address may only own one crypto duck');
     // Get the current tokenId, this starts at 0.
     uint256 newItemId = _tokenIds.current();
 
@@ -346,16 +345,85 @@ function makeAnEpicNFT(string memory srcTokenUri) public {
   }
 ```
 
-That's cool and stuff but how can I test my code ? Let's see that in the next chapter !
+That's cool and stuff but how can I test my code? Let's see that in the next chapter!
 
 
 ## Test it !
 Duration: 0:20:00
 
+To test our smart contract we can update the `run.mjs` script to create our contract then call our new methode `makeAnEpicNft`.
+
+```javascript
+const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
+const nftContract = await nftContractFactory.deploy();
+await nftContract.deployed();
+console.log("Contract deployed to:", nftContract.address);
+
+const svg = "https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png"
+
+// Call the function.
+let txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+
+// Mint another NFT for fun.
+txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+```
+
+Here we used a png that is not store in an decentralized storage, but it's just for the test so it's not a probleme, you can used any png.
+
+Is it working? 🎉
+
+That's nice but I think we can have better test, can we unit test our contract? YES we can!
+
+Let's create a `MySmartContractSolTest.js` file under the package `test`
+
+We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.mjs` with some test at the end.  
+
+Here is the code:
+
+```javascript
+const { expect } = require('chai')
+
+describe('MyEpicSmartContract contract', function () {
+  it('Should emit NewNFTMinted', async function () {
+    const [owner] = await ethers.getSigners()
+
+    const nftContractFactory = await hre.ethers.getContractFactory(
+      'MyEpicSmartContract',
+    )
+    const nftContract = await nftContractFactory.deploy()
+    await nftContract.deployed()
+    console.log('Contract deployed to:', nftContract.address)
+
+    const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
+
+    await expect(nftContract.makeAnEpicNFT(svg))
+      .to.emit(nftContract, 'NewNFTMinted')
+      .withArgs(owner.address, 0) // first item
+  })
+})
+```
+
+We basically:
+- `deploy` the contract on hardate test chain
+- call the methode `makeAnEpicNFT`
+- and expect an event to be fire, using chai `expect`
+
+To run it:
+
+```javascript
+npx hardhat test
+```
+
+Awesome we now have our smart contract tested 😎
 
 
 ## Deploy your smart contract 🚀
 Duration: 0:20:00
+
 
 
 ### Get a Wallet ! And some ETH 💰
