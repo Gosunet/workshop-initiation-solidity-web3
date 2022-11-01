@@ -180,12 +180,178 @@ We first need to add the openzeppelin dependency.
 yarn add @openzeppelin/contracts
 ```
 
+Then import them in our contract like that
+
+```javascript
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+```
+
+As you can see we also import `Counters.sol`, this will help us to generate our NFT id.
+
+Now that we have imported the contract `ERC721URIStorage` what we need to do now is to make our contract inherit from it.
+
+To do that it's pretty simple !
+
+```javascript
+// We inherit the contract we imported. This means we'll have access
+// to the inherited contract's methods.
+contract MyEpicSmartContract is ERC721URIStorage {
+
+  // We need to pass the name of our NFTs token and it's symbol.
+  constructor() ERC721 ("CryptoDuck", "DUCK") {
+    console.log("This is my NFT contract. Woah!");
+  }
+```
+
+You will see that here we need to call the `ERC721` contract constructor with two string, one for the name of our NFT token, and the other one for the symbol of our collection.
+
+Feel free to name it as you want 😉
+
+Now we can use the `ERC721` contract method !  
+Let's create our mehtode that we will call to create our NFT that will represente our custom duck.  
+We don't want to store the whole duck SVG in our contract because storage in the blockchain cost money 💰 so we will only store the url to access to our duck SVG. 
+
+> Remember that data in the blockchain are immutable, this is why it's important that our url will be accessible FOREVER ! That's why it's strongly recommended to stare our image in a decentralized store file systeme like IPFS.
+
+
+```javascript
+function makeAnEpicNFT(string memory srcTokenUri) public { 
+
+}
+```
+
+Each of our NFT will need an unique ID to do that we will use the `Counters.sol` we have imported.
+
+Add this in your contract 
+
+```javascript
+using Counters for Counters.Counter;
+Counters.Counter private _tokenIds;
+```
+
+Let's code our contract to mint an NFT now !
+
+First we want to get the currrent ID for your new NFT
+
+```javascript
+uint256 newItemId = _tokenIds.current();
+````
+
+Then we will mint our NFT calling the methode from the OpenZeppelin contract (all internal methode are prefix with an undescrore)
+
+```javascript
+_safeMint(msg.sender, newItemId);
+```
+
+Notice `msg.sender` here, it's a magic solidity variable that hold the address of the wallet that call this methode.
+
+We want our NFT to avec an image, to do that we will create a `payload` that respect some convention used to parse NFT, doing that our NFT will be readable in marketplace like [OpenSea](https://opensea.io/). We also want our payload to be as tiny as possible, that's why we will encode it in base64.
+
+```javascript
+// Get all the JSON metadata in place and base64 encode it.
+string memory json = Base64.encode(
+    bytes(
+        string(
+            abi.encodePacked(
+                '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
+            )
+        )
+    )
+);
+
+// Just like before, we prepend data:application/json;base64, to our data.
+string memory finalTokenUri = string(
+    abi.encodePacked("data:application/json;base64,", json)
+);
+```
+
+Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end ? 
+
+In order to be able to use the `Base64.encode` we need to add the Base64 library to our project.  
+Create a `libraries` package under `contracts` and create a file `Base64.sol` in it. You can find the content of this file here [here](https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol).  
+After that import the library in our contract file.
+
+```javascript
+import { Base64 } from "./libraries/Base64.sol";
+```
+
+Finally we need to set the date to the NFT
+
+
+```javascript
+// Set the NFTs data.
+_setTokenURI(newItemId, finalTokenUri);
+
+console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+```
+
+And increment the counter
+
+```javascript
+// Increment the counter for when the next NFT is minted.
+_tokenIds.increment();
+```
+
+One thing that we can do is to emit an Event, the front will be able to listen to that Event and show some stuff to the user.
+
+To do that declare a new Event in our contract 
+
+```javascript
+event NewNFTMinted(address sender, uint256 tokenId);
+```
+
+and emit it at the end of your `makeAnEpicNFT` methode.
+
+```javascript
+emit NewNFTMinted(msg.sender, newItemId);
+```
+
+At the end you should get something like that
+
+```javascript
+function makeAnEpicNFT(string memory srcTokenUri) public {
+    require(balanceOf(msg.sender) == 0, 'Each address may only own one crypto duck');
+    // Get the current tokenId, this starts at 0.
+    uint256 newItemId = _tokenIds.current();
+
+     // Actually mint the NFT to the sender using msg.sender.
+    _safeMint(msg.sender, newItemId);
+
+    // Get all the JSON metadata in place and base64 encode it.
+    string memory json = Base64.encode(
+        bytes(
+            string(
+                abi.encodePacked(
+                    '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
+                )
+            )
+        )
+    );
+
+    // Just like before, we prepend data:application/json;base64, to our data.
+    string memory finalTokenUri = string(
+        abi.encodePacked("data:application/json;base64,", json)
+    );
+
+    // Set the NFTs data.
+    _setTokenURI(newItemId, finalTokenUri);
+
+    console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+
+    // Increment the counter for when the next NFT is minted.
+    _tokenIds.increment();
+
+    emit NewNFTMinted(msg.sender, newItemId);
+  }
+```
+
+That's cool and stuff but how can I test my code ? Let's see that in the next chapter !
 
 
 ## Test it !
 Duration: 0:20:00
+
 
 
 ## Deploy your smart contract 🚀
