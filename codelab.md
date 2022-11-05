@@ -175,6 +175,7 @@ But what's an NFT? On the EVM compatible blockchain an NFT is "just" an [ERC-721
 That's a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).
 
 We first need to add the openzeppelin dependency.
+In the `hardat` folder run:
 
 ```bash
 yarn add @openzeppelin/contracts
@@ -408,14 +409,14 @@ describe('MyEpicSmartContract contract', function () {
 ```
 
 We basically:
-- `deploy` the contract on hardate test chain
+- `deploy` the contract on hardhat test chain
 - call the methode `makeAnEpicNFT`
 - and expect an event to be fire, using chai `expect`
 
 To run it:
 
 ```javascript
-npx hardhat test
+yarn hardhat test
 ```
 
 Awesome we now have our smart contract tested 😎
@@ -424,12 +425,111 @@ Awesome we now have our smart contract tested 😎
 ## Deploy your smart contract 🚀
 Duration: 0:20:00
 
+Now that we have a working smart contract we want to deploy it on a real blockchain! So let's go 🚀
 
 
 ### Get a Wallet ! And some ETH 💰
 
+In oder to deploy our smart contract we will need some ethereum. Don't worry we will use the goerli testnet of ethereum so this will not cost us a penny!
+
+So if you don't already have a wallet, download the [metamask extension on 
+chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
+
+You will be guided on the setup phase by Metamask. When this part is done,
+switch to `Goerly network`, you should be on the etheruem mainet at first. If you don't see the `Goerly network` click on "Show/hide testnet".
+
+Once it's done you will see that you have 0 GoerliETH 😢
+
+So in order to get some GoerliETH you will have to request some in a faucet.
+
+This one should work https://goerlifaucet.com/, you gonna need to create a Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy paste in the input our public key address from metamask (the one that look like 0xf20...4D8 when you open it).
+
+If you got some eth let's go to the next part 🔥
 
 ### Deploy
+
+Deploy our contract it pretty much like running it with the `run.mjs` script thanks to hardhat. 
+
+So let's create a new script `deploy.mjs`:
+
+```javascript
+const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
+const nftContract = await nftContractFactory.deploy();
+await nftContract.deployed();
+console.log("Contract deployed to:", nftContract.address);
+
+const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
+
+// Call the function.
+let txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+console.log("Minted NFT #1")
+```
+
+Now we have some setup to do.
+
+First you need to update your `hardhat.config`file.
+We need to add a new network, here Goerly, add this in the `module.export`: 
+
+```javscript
+networks: {
+    goerli: {
+      url: process.env.STAGING_ALCHEMY_KEY_URL,
+      accounts: [process.env.PRIVATE_KEY],
+    },
+  },
+```
+
+Each time you want to deploy to a specifiv network you will need to add it like that in our hardat config. Pretty easy no?  
+You can deploy to every EVM compatible blockchain like that, even a blockchain like Avalanche 😉
+
+You have surely notice the `process.env.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
+
+Add the `PRIVATE_KEY` value in a `.env` file, to get the value of our private key, go to metamask, click on the 3 dot next to our account, go to detail then click on "export private key".  
+⚠️⚠️⚠️ You should never share this key with anyone! Otherwise some bad intentionate peoples can still our account, and all that in within it!
+
+To get the `STAGING_ALCHEMY_KEY_URL` you need to login to [Alchemy](https://dashboard.alchemy.com/) then create a new 'app' with the create app button. You will be ask to choose a name, a description and a chain, do as you like for name and description and choose Ethereum chain with Goerli network, you will get an https url, this is our `STAGING_ALCHEMY_KEY_URL` that you neet to add in your `.env` file.  
+The alchemy app will act as a node to the ethereum goerli network to interact with the blockchain.
+
+
+Now that you set all the varibles we need to add the dotenv dependency, in the `hardhat` folder run:
+
+```bash
+yarn add -D dotenv 
+```
+
+Then add the import in top of you hardat config file:
+
+```javascript
+require('dotenv').config();
+```
+
+Finally, run:
+
+```bash
+yarn hardhat run scripts/deploy.mjs --network goerli
+```
+
+You should get something like that:
+
+```bash
+Contract deployed to: 0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A
+Minted NFT #1
+```
+
+Awesome you have deployed your first smart contract in the real world! And mint an NFT.
+
+Now, head to https://testnets.opensea.io/.
+Create this url: https://testnets.opensea.io/assets/goerli/INSERT_DEPLOY_CONTRACT_ADDRESS_HERE/TOKEN_ID
+
+Mine is : https://testnets.opensea.io/assets/goerli/0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A/0 (id start at 0!)
+
+And you should see your first duck NFT 🎉
+
+Opensea can take up 15min to refresh so don't worry if you didn't see your NFT right away.
+
+It's EPIC, but kinda borring it's the same svg. Let's interact with it and create our own duck!
 
 
 
@@ -581,13 +681,7 @@ Time to test!
 ### Connection testing
 
 To test a wallet connection, you need to first have a Wallet.  
-So if you don't already have on, download the [metamask extension on 
-chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
-
-You will be guided on the setup phase by Metamask. When this part is done,
-switch to Goerly network. It is a testing network. 
-
-Now you're all set, let's go clicking our connect button. 
+You should already have one so, let's go clicking our connect button.   
 You should see a pop-up asking you to approve the connection to our website.
 If you accept, you should then see your address instead of the login button. 
 

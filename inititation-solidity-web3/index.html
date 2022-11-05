@@ -122,7 +122,7 @@ Hello Guillaume
 <p>Let&#39;s change that! What we want is a contract that enable us to <code>mint</code> an NFT. Mint just mean to create our NFT in the blockchain.</p>
 <p>But what&#39;s an NFT? On the EVM compatible blockchain an NFT is &#34;just&#34; an <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">ERC-721 token</a>, that mean that our smart contract should implement the ERC-721 interface!</p>
 <p>That&#39;s a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! <a href="https://github.com/OpenZeppelin" target="_blank">OpenZeppelin</a> is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).</p>
-<p>We first need to add the openzeppelin dependency.</p>
+<p>We first need to add the openzeppelin dependency. In the <code>hardat</code> folder run:</p>
 <pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts
 </code></pre>
 <p>Then import them in our contract like that:</p>
@@ -288,12 +288,12 @@ describe(&#39;MyEpicSmartContract contract&#39;, function () {
 </code></pre>
 <p>We basically:</p>
 <ul>
-<li><code>deploy</code> the contract on hardate test chain</li>
+<li><code>deploy</code> the contract on hardhat test chain</li>
 <li>call the methode <code>makeAnEpicNFT</code></li>
 <li>and expect an event to be fire, using chai <code>expect</code></li>
 </ul>
 <p>To run it:</p>
-<pre><code language="language-javascript" class="language-javascript">npx hardhat test
+<pre><code language="language-javascript" class="language-javascript">yarn hardhat test
 </code></pre>
 <p>Awesome we now have our smart contract tested 😎</p>
 
@@ -301,8 +301,63 @@ describe(&#39;MyEpicSmartContract contract&#39;, function () {
       </google-codelab-step>
     
       <google-codelab-step label="Deploy your smart contract 🚀" duration="20">
-        <h2 is-upgraded>Get a Wallet ! And some ETH 💰</h2>
+        <p>Now that we have a working smart contract we want to deploy it on a real blockchain! So let&#39;s go 🚀</p>
+<h2 is-upgraded>Get a Wallet ! And some ETH 💰</h2>
+<p>In oder to deploy our smart contract we will need some ethereum. Don&#39;t worry we will use the goerli testnet of ethereum so this will not cost us a penny!</p>
+<p>So if you don&#39;t already have a wallet, download the <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr" target="_blank">metamask extension on chrome web store</a>.</p>
+<p>You will be guided on the setup phase by Metamask. When this part is done, switch to <code>Goerly network</code>, you should be on the etheruem mainet at first. If you don&#39;t see the <code>Goerly network</code> click on &#34;Show/hide testnet&#34;.</p>
+<p>Once it&#39;s done you will see that you have 0 GoerliETH 😢</p>
+<p>So in order to get some GoerliETH you will have to request some in a faucet.</p>
+<p>This one should work https://goerlifaucet.com/, you gonna need to create a Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy paste in the input our public key address from metamask (the one that look like 0xf20...4D8 when you open it).</p>
+<p>If you got some eth let&#39;s go to the next part 🔥</p>
 <h2 is-upgraded>Deploy</h2>
+<p>Deploy our contract it pretty much like running it with the <code>run.mjs</code> script thanks to hardhat.</p>
+<p>So let&#39;s create a new script <code>deploy.mjs</code>:</p>
+<pre><code language="language-javascript" class="language-javascript">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
+const nftContract = await nftContractFactory.deploy();
+await nftContract.deployed();
+console.log(&#34;Contract deployed to:&#34;, nftContract.address);
+
+const svg = &#39;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#39;
+
+// Call the function.
+let txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+console.log(&#34;Minted NFT #1&#34;)
+</code></pre>
+<p>Now we have some setup to do.</p>
+<p>First you need to update your <code>hardhat.config</code>file. We need to add a new network, here Goerly, add this in the <code>module.export</code>:</p>
+<pre><code language="language-javscript" class="language-javscript">networks: {
+    goerli: {
+      url: process.env.STAGING_ALCHEMY_KEY_URL,
+      accounts: [process.env.PRIVATE_KEY],
+    },
+  },
+</code></pre>
+<p>Each time you want to deploy to a specifiv network you will need to add it like that in our hardat config. Pretty easy no?<br> You can deploy to every EVM compatible blockchain like that, even a blockchain like Avalanche 😉</p>
+<p>You have surely notice the <code>process.env.STAGING_ALCHEMY_KEY_URL</code> and <code>process.env.PRIVATE_KEY</code> values.</p>
+<p>Add the <code>PRIVATE_KEY</code> value in a <code>.env</code> file, to get the value of our private key, go to metamask, click on the 3 dot next to our account, go to detail then click on &#34;export private key&#34;.<br> ⚠️⚠️⚠️ You should never share this key with anyone! Otherwise some bad intentionate peoples can still our account, and all that in within it!</p>
+<p>To get the <code>STAGING_ALCHEMY_KEY_URL</code> you need to login to <a href="https://dashboard.alchemy.com/" target="_blank">Alchemy</a> then create a new ‘app&#39; with the create app button. You will be ask to choose a name, a description and a chain, do as you like for name and description and choose Ethereum chain with Goerli network, you will get an https url, this is our <code>STAGING_ALCHEMY_KEY_URL</code> that you neet to add in your <code>.env</code> file.<br> The alchemy app will act as a node to the ethereum goerli network to interact with the blockchain.</p>
+<p>Now that you set all the varibles we need to add the dotenv dependency, in the <code>hardhat</code> folder run:</p>
+<pre><code language="language-bash" class="language-bash">yarn add -D dotenv 
+</code></pre>
+<p>Then add the import in top of you hardat config file:</p>
+<pre><code language="language-javascript" class="language-javascript">require(&#39;dotenv&#39;).config();
+</code></pre>
+<p>Finally, run:</p>
+<pre><code language="language-bash" class="language-bash">yarn hardhat run scripts/deploy.mjs --network goerli
+</code></pre>
+<p>You should get something like that:</p>
+<pre><code language="language-bash" class="language-bash">Contract deployed to: 0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A
+Minted NFT #1
+</code></pre>
+<p>Awesome you have deployed your first smart contract in the real world! And mint an NFT.</p>
+<p>Now, head to https://testnets.opensea.io/. Create this url: https://testnets.opensea.io/assets/goerli/INSERT_DEPLOY_CONTRACT_ADDRESS_HERE/TOKEN_ID</p>
+<p>Mine is : https://testnets.opensea.io/assets/goerli/0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A/0 (id start at 0!)</p>
+<p>And you should see your first duck NFT 🎉</p>
+<p>Opensea can take up 15min to refresh so don&#39;t worry if you didn&#39;t see your NFT right away.</p>
+<p>It&#39;s EPIC, but kinda borring it&#39;s the same svg. Let&#39;s interact with it and create our own duck!</p>
 
 
       </google-codelab-step>
@@ -385,9 +440,7 @@ import Web3 from &#39;web3&#39;
 </code></pre>
 <p>Time to test!</p>
 <h2 is-upgraded>Connection testing</h2>
-<p>To test a wallet connection, you need to first have a Wallet.<br> So if you don&#39;t already have on, download the <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr" target="_blank">metamask extension on chrome web store</a>.</p>
-<p>You will be guided on the setup phase by Metamask. When this part is done, switch to Goerly network. It is a testing network.</p>
-<p>Now you&#39;re all set, let&#39;s go clicking our connect button. You should see a pop-up asking you to approve the connection to our website. If you accept, you should then see your address instead of the login button.</p>
+<p>To test a wallet connection, you need to first have a Wallet.<br> You should already have one so, let&#39;s go clicking our connect button.<br> You should see a pop-up asking you to approve the connection to our website. If you accept, you should then see your address instead of the login button.</p>
 <p>Awesome!</p>
 <p>If you wonder what&#39;s under the button, you can look for <code>Web3WalletButton</code>.<br> It calls the hook <code>useWeb3React</code>, and get the connected address, and the active props.</p>
 <p>From the <code>active</code> props, we decide what we display: a truncated address or a connection button.</p>
