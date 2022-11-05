@@ -463,12 +463,13 @@ and them build some great stuff ✨
 In the `app` folder, do the following command:
 
 ```sh
-yarn add @web3-react/core @web3-react/injected-connector web3 
+yarn add @web3-react/core @web3-react/injected-connector ethers @ethersproject/providers 
 ```
 
 Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.
 
-Packages under `@web3-react/*` are abstractions on top of the `web3` library. It give us 
+Packages under `@web3-react/*` are bridge between react and client libraries such `ethers` 
+(we are using) or `web3` library. It give us 
 friendly tools to get a reactive state in react components.
 
 Now your probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
@@ -486,7 +487,7 @@ First import the context `Provider` and the web3 library:
 
 ```tsx
 import { Web3ReactProvider } from '@web3-react/core'
-import Web3 from 'web3'
+import { Web3Provider } from "@ethersproject/providers";
 ```
 
 Then, wrap the whole JSX code in the `return` block by the web3 provider:
@@ -494,7 +495,7 @@ Then, wrap the whole JSX code in the `return` block by the web3 provider:
 ```tsx
   // ...
   return (
-    <Web3ReactProvider getLibrary={(provider) => new Web3(provider)}>
+    <Web3ReactProvider getLibrary={(provider) => new Web3Provider(provider)}>
       <div className={styles.app}>
         {/* ... */}
      </div>
@@ -505,7 +506,7 @@ Then, wrap the whole JSX code in the `return` block by the web3 provider:
 Note the provider take a property (commonly called `prop` in react) `getLibrary`.  
 It is mandatory to initiate the web3 library we want to use. This make `react-web3` agnostic of your
 client library.  
-Here, we pass a function to initialize `Web3`, the library commonly used.
+Here, we pass a function to initialize `Web3Provider` from `ethers`, the library commonly used.
 
 Great! Now we are able to discuss with the wallet in our React components!
 
@@ -535,7 +536,7 @@ For that, we will call the `useWebReact` hook. This hook return an object contai
 Perfect, this is exactly what we want! 
 
 ```tsx
-  const { active } = useWeb3React<Web3>()
+  const { active } = useWeb3React<Web3Provider>()
 ```
 
 Ok, now we know if we are connected directly from the wallet, nice.
@@ -545,7 +546,7 @@ For that, the goal is to fill the `connect` function.
 From the hook, we will get an additional property: `activate`
 
 ```tsx
-  const { active, activate } = useWeb3React<Web3>()
+  const { active, activate } = useWeb3React<Web3Provider>()
 ```
 
 If we take a look at the activate signature, we can see it takes an argument `injected`. 

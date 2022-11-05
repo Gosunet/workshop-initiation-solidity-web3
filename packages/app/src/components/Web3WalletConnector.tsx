@@ -1,12 +1,12 @@
 
 import React, { useMemo } from 'react'
-import Web3 from 'web3'
 
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { Web3WalletButton } from './Web3WalletButton'
 
 import styles from './Web3WalletConnector.module.css'
+import { Web3Provider } from '@ethersproject/providers'
 
 const AVALANCHE_TESTNET_PARAMS = {
   chainId: '0xA869',
