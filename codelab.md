@@ -608,8 +608,241 @@ disconnect function, and we are good! Good Job! 🙌
 ## Integrate and interact with your smart contract
 Duration: 0:15:00
 
+For now, we implemented the connection with our wallet. That's already great,
+but we're here to interact with our smart contract right? Let's goooo 🧑‍💻
 
+The frontend, and the web3 library needs to know what is the structure of our contract. 
+This means:
 
+- the public data exposed,
+- public functions,
+- events (yeah, the Ethereum Virtual Machine aka EVM have built in support for events)
+
+And there is a file containing all those informations, 
+produced on the smart contract build: the JSON artifact.
+
+In the contract package, look for the `artifacts/contracts/` folder.
+Find the file with the name of our contract, and take a look on the content.
+
+It contains all the informations our frontend needs. 🎉
+
+OK, now we know what we have, let's think about what we want. 
+
+The goal will we to actually mint our NFT, finally!  
+To achieve that, we want to call our smart contract function `makeAnEpicNFT`, 
+and listen to the event `NewNFTMinted`.  
+From the event we will get the token id, and display an URL to be able to see it.  
+
+We have created for you the `Mint` component containing the structure so we can focus 
+on the business logic. Take a look at this component.
+
+We have to functions to fill: `setupEventListener` and `askContractToMintNft`.  
+The first one will listen for mint event on our contract, and the second will call our 
+contract to mint the nft.  
+
+The component return `null` if `active` is `false`, and a button otherwise.  
+This means if you are connected, the button should appear.
+
+Let's go!
+
+The first things is to replace the `active` variable to get it from the `useWeb3React` hook.  
+We already did it, so it should be easy 😛
+
+Take also the `library` property from the hook, we will need it. It's better to give 
+`Web3Provider` as generic parameter to the hook. It will type the `library` property for us.
+
+We take `library` here because we need it to call the blockchain.  
+
+Let's code the event listener. It's the "easier" part, and we will be able to 
+understand the basics.
+
+### Event Listener
+
+First, the variable `provider` can be `undefined`, so we need to verify it isn't.  
+
+```ts
+  const setupEventListener = useCallback(() => {
+    if (!provider) {
+      return
+    }
+  }
+```
+
+Then, because of the inherit behavior of `ethers` library, we need to get the transaction `signer`.  
+
+```tsx
+    const signer = provider.getSigner()
+```
+
+Secondly, we will create a contract client instance.  
+
+```ts
+    const connectedContract = new Contract(
+      // ...
+    )
+```
+
+This constructor take 3 arguments:
+
+- The contract address,
+- The contract ABI (Application Binary Interface). It is a sub part of the JSON artifact we talked before,
+- The `signer` variable we created before. It will be used to sign transaction.
+
+Let fill them on by one.  
+
+On the top of the file, we've created a `CONTRACT_ADDRESS` constant to replace. Put here the contract address 
+you got when you've deployed your contract.  
+
+For the ABI, it should be on the contract package. Let's copy the `CryptoDuck.json` in the `src` folder, 
+and then import it.  
+
+```bash
+# this assume your shell location is in the root folder
+cp packages/nft/artifacts/contracts/CryptoDuck.json packages/app/src
+```
+
+```tsx
+import myEpicNft from '../abi/CryptoDuck.json'
+```
+
+And for the signers, we've created a variable for it, perfect!  
+
+We should have this: 
+
+```tsx
+    const signer = provider.getSigner()
+    const contract = new Contract(
+      CONTRACT_ADDRESS,
+      myEpicNft.abi,
+      signer
+    )
+```
+
+Now we have a contract client instance, we can interact with our contract!  
+To listen events, we need to call `on` method, and pass it our event name `NewNFTMinted` as 
+fist parameter, and a callback as second parameter.  
+The first argument of the callback is the contract address, and the second is the return type 
+of the method called (here the token id as a big number).
+
+> ℹ️ to get the number of our token from a BigNumber, we need to call `toNumber` method on it.
+
+Our UI will be simple. We will display an alert the received informations.
+
+```tsx
+    contract.on('NewNFTMinted', (from, tokenId) => {
+      console.log(from, tokenId.toNumber())
+      alert(
+        `Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
+      )
+    })
+```
+
+> ℹ️ The `ethers` library used under the hood is not perfect here, and we loose our strong typing 😭
+
+🙌 We have a listener set up! 🙌 But we can't test it without minting an NFT, so let do that!
+
+### LET'S MINT
+
+Here we go! The final part!  
+
+Here we will fill the `askContractToMintNft` function. But this one have a bit much logic to handle.  
+
+When the user will click on the button, it will fire our function.  
+Our component only have a SVG html element reference. But we want our NFT to have an actual image!  
+So the first step will be to create an image from the element we have.  
+
+Then, we have to store it. But on the blockchain, we pay for every storage we use, and we don't 
+want the mint to be over expensive!
+
+Here, we have 2 solutions.  
+The first one: store our image in a traditional manner. Like an S3 bucket. But we want to create a 
+decentralized application! What happen on our NFT if the S3 is deleted? We have only data, but no 
+image attached to it. We will have a broken NFT.
+The second one: store it on IPFS, a decentralized storage. It seems a lot better right? 😁 
+But IPFS have some issues too. It's a protocol, it mean the user will have to install the protocol
+on his computer to interact with, or use a gateway. Which is centralized 😅
+
+Here, we will use a gateway deployed on AWS. There is some libraries allowing to run a minimal 
+IPFS node in Javascript in the browser. I would be a better solution since doing that we don't 
+have a single point of failure. Nevermind, for our little project the gateway solution was fun!
+
+Enough talk, let's code!
+
+First, we will inform the UI we're doing some stuff and it need to display a loader.  
+We've received a `setIsLoading` method from props, so let's call it.  
+
+```tsx
+    setIsLoading(true)
+```
+
+Then, we will verify we do have an svg element or throw an error otherwise.  
+
+```tsx
+    if (!svgRef.current) {
+      throw new Error('No SVG')
+    }
+```
+
+Now we're sure we have an svg element, let's create an image from it.  
+Thankfully, we've created a `getSvgImageFromSvgElement` function for you 🫡
+
+```tsx
+    const svg = await getSvgImageFromSvgElement(svgRef.current)
+```
+
+And let's upload it to IPFS. Here too, you have a `uploadToIPFS` function to make your like easier 🫡
+This function take an object parameter with 2 properties: `svg` and `name`
+
+```tsx
+    const cid = await uploadSvgToIPFS({
+      svg,
+      name: `nft ${new Date().toISOString()}`,
+    })
+```
+
+Now we have an unique identifier for our stored image. Exactly what our contract need 😁
+
+We can call our contract. Remember the "get the signer", "create a contract instance" stuff?  
+We will repeat it here. 
+
+> - "Gnagnagna that's a code duplication" 
+> YES IT IS! Two time duplication is ok, if this code was repeated 3,4,5 times, 
+> we would have created an abstraction.
+
+```tsx
+    const signer = provider.getSigner()
+    const connectedContract = new ethers.Contract(
+      CONTRACT_ADDRESS,
+      myEpicNft.abi,
+      signer
+    )
+```
+
+Nooooooow, we can create a transaction 🔥
+
+Before we was listening an event, so we called `on` method. Here to call a distributed method,
+we can directly call the method directly on the contract instance.  
+
+If your IDE does not autocomplete, it's normal, the contract does not infer our ABI, and it's really
+sad 😭. 
+
+```tsx
+    const nftTxn = await connectedContract.makeAnEpicNFT(`ipfs://${cid}`)
+```
+
+Then we will wait for the transaction to be processed
+
+```tsx
+    await nftTxn.wait()
+```
+
+And inform the UI we have FINISHED 🎉
+
+```tsx
+    setIsLoading(false)
+```
+
+TIME TO TEST!
 
 ## Bonus
 Duration: 0:15:00
