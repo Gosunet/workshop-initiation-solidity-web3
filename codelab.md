@@ -1,7 +1,7 @@
 author: Jonathan Lagneaux & Guillaume Lamanda
 summary: Initiation solidity et web3
-id: inititation-solidity-web3
-categories: codelab,markdown
+id: initiation-solidity-web3
+categories: codelab, markdown
 environments: Web
 status: Draft
 feedback link: https://github.com/Gosunet/workshop-initiation-solidity-web3
@@ -18,7 +18,7 @@ During this workshop you will :
 - deploy it on a real blockchain
 - integrate and interact with it in a small react application using web3.js
 
-To make this workshop more fun we will use a small site made by Zenika that allow us to customize a duck 🦆 https://pimpmyduck.zenika.com/.
+To make this workshop more fun we will use a small site made by Zenika that allows us to customize a duck 🦆 https://pimpmyduck.zenika.com/.
 
 
 What we want to do here is to create an NFT based on our custom duck! That will make us explore all the things we list above. 🙌
@@ -33,7 +33,7 @@ git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 
 If we take a look at the structure, we can notice it's a monorepo using yarn workspaces.  
 
-At the root, you can see a folder name `packages`. In this folder we have separated packages.
+At the root, you can see a folder name `packages`. In this folder, we have separated packages.
 
 We will focus on two packages today: `app` and `hardhat`.
 
@@ -49,7 +49,7 @@ Now we've seen that, let's start building! 🚀
 - test our smart contract
 - deploy our smart contract
 
-If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardhat in term of features.
+If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardhat in terms of features.
 
 Install Hardhat 
 ```sh
@@ -66,11 +66,8 @@ yarn hardhat
 This will create folders :
 
 - `contracts` : folder for our solidity files,
-
-- `scripts` : a directory that contain scripts to handle deploy, run, ...
-
+- `scripts` : a directory that contains scripts to handle deployment, run, ...
 - `test`: unit test sources,
-
 - `hardhat-config.js` : config file for Hardhat
 
 Finally, run `yarn hardhat node` and this should print out a bunch of accounts.
@@ -89,13 +86,13 @@ Then run:
 
 You should see a bunch of tests succeeded 🎉
 
-You can now delete Lock.js under test, deploy.js under scripts and Lock.sol under contracts. (not the folder!)
+You can now delete Lock.js under test, deploy.js under scripts and `Lock.sol` under contracts. (not the folder!)
 
 ## Write your first smart contract 🆕
 Duration: 0:20:00
 
 
-Now that we have setup Hardhat let's create our first smart contract!  
+Now that we have set up Hardhat let's create our first smart contract!  
 To do so let's create a new file `MyEpicSmartContract.sol` under `contracts` folder.  
 Be careful file structure is important!
 
@@ -119,20 +116,20 @@ contract MyEpicSmartContract {
 > If you use visual code you can install the [solidity extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project) for syntax highlighting.
 
 
-Congratulation you have officialy write your first smart contract 🥳  
+Congratulation you have officially written your first smart contract 🥳  
 Easy no?
 
-Next step is to compile our smart contract, to do so run `yarn hardhat compile`.
+The next step is to compile our smart contract, to do so run `yarn hardhat compile`.
 
 Now it's our turn to work!  
-Let's create a small function to set an attribute `name` into our smart contract. Then another function `sayHello` that will simply use the name you just set and print `Hello ${name}` in console.  
+Let's create a small function to set an attribute `name` into our smart contract. Then another function `sayHello` will simply use the name you just set and print `Hello ${name}` in the console.  
 Here is a link to the [solidity doc](https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html) to help you with that.
 
 ### A script to run our contract 
 
-Hardhat allow us to deploy our smart contract in a local blockchain, and it allow us to do it very easily.
+Hardhat allows us to deploy our smart contract in a local blockchain, and it allows us to do it very easily.
 
-We juste have to write a small script to do that, so let's go!
+We just have to write a small script to do that, so let's go!
 
 Create a file `run.mjs` under `scripts`.
 
@@ -160,21 +157,22 @@ Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 Hello Guillaume
 ```
 
-`0x5FbDB2315678afecb367f032d93F642f64180aa3` here is the contract adresse in our local blockchain where the contract was deployed.
+`0x5FbDB2315678afecb367f032d93F642f64180aa3` here is the contract address in our local blockchain where the contract was deployed.
 
 
 ## Create a contract that mints NFTs 🦆
 Duration: 0:20:00
 
-It's all fun and stuff but our contract is not doing anything usefull for our use case.
+It's all fun and stuff but our contract is not doing anything useful for our use case.
 
-Let's change that! What we want is a contract that enable us to `mint` an NFT. Mint just mean to create our NFT in the blockchain.
+Let's change that! What we want is a contract that enables us to `mint` an NFT. Mint just means to create our NFT in the blockchain.
 
-But what's an NFT? On the EVM compatible blockchain an NFT is "just" an [ERC-721 token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), that mean that our smart contract should implement the ERC-721 interface!
+But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" an [ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
 
-That's a lot of work. Fortunatly for us in Solidity we can use inherance and there are open-source contract available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot a people, and secure (at least it as been audited strongly and used in the real world without flaws).
+That's a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).
 
-We first need to add the openzeppelin dependency.
+We first need to add the OpenZeppelin dependency.
+In the `harhdat` folder run:
 
 ```bash
 yarn add @openzeppelin/contracts
@@ -204,13 +202,13 @@ contract MyEpicSmartContract is ERC721URIStorage {
   }
 ```
 
-You will see that here we need to call the `ERC721` contract constructor with two string, one for the name of our NFT token, and the other one for the symbol of our collection.
+You will see that here we need to call the `ERC721` contract constructor with two strings, one for the name of our NFT token, and the other one for the symbol of our collection.
 
 Feel free to name it as you want 😉
 
 Now we can use the `ERC721` contract method!  
-Let's create our mehtode that we will call to create our NFT that will represente our custom duck.  
-We don't want to store the whole duck SVG in our contract because storage in the blockchain cost money 💰 so we will only store the url to access to our duck SVG. 
+Let's create the method that we will call to create our NFT that will represent our custom duck.  
+We don't want to store the whole duck SVG in our contract because storage in the blockchain costs money 💰 so we will only store the URL to access our duck SVG. 
 
 > Remember that data in the blockchain are immutable, this is why it's important that our url will be accessible FOREVER ! That's why it's strongly recommended to stare our image in a decentralized store file systeme like IPFS.
 
@@ -221,9 +219,9 @@ function makeAnEpicNFT(string memory srcTokenUri) public {
 }
 ```
 
-Each of our NFT will need an unique ID to do that we will use the `Counters.sol` we have imported.
+Each of our NFTs will need a unique ID to do that we will use the `Counters.sol` we have imported.
 
-Add this in your contract:
+Add this to your contract:
 
 ```javascript
 using Counters for Counters.Counter;
@@ -232,21 +230,21 @@ Counters.Counter private _tokenIds;
 
 Let's code our contract to mint an NFT now!
 
-First we want to get the currrent ID for your new NFT.
+First, we want to get the current ID for your new NFT.
 
 ```javascript
 uint256 newItemId = _tokenIds.current();
 ````
 
-Then we will mint our NFT calling the methode from the OpenZeppelin contract (all internal methode are prefix with an undescrore)
+Then we will mint our NFT calling the method from the OpenZeppelin contract (all internal methods are prefixed with an underscore)
 
 ```javascript
 _safeMint(msg.sender, newItemId);
 ```
 
-Notice `msg.sender` here, it's a magic solidity variable that hold the address of the wallet that call this methode.
+Notice `msg.sender` here, it's a magic solidity variable that holds the address of the wallet that calls this method.
 
-We want our NFT to avec an image, to do that we will create a `payload` that respect some convention used to parse NFT, doing that our NFT will be readable in marketplace like [OpenSea](https://opensea.io/). We also want our payload to be as tiny as possible, that's why we will encode it in base64.
+We want our NFT to have an image, to do that we will create a `payload` that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like [OpenSea](https://opensea.io/). We also want our payload to be as tiny as possible, that's why we will encode it in base64.
 
 ```javascript
 // Get all the JSON metadata in place and base64 encode it.
@@ -266,17 +264,17 @@ string memory finalTokenUri = string(
 );
 ```
 
-Feel free again to change the name or description of our Duck. Maybe you can have an dynamic name and description ? Use a name set in the front end? 
+Feel free again to change the name or description of our Duck. Maybe you can have a dynamic name and a description? Use a name set in the frontend? 
 
-In order to be able to use the `Base64.encode` we need to add the Base64 library to our project.  
-Create a `libraries` package under `contracts` and create a file `Base64.sol` in it. You can find the content of this file here [here](https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol).  
-After that import the library in our contract file.
+To be able to use the `Base64.encode` we need to add the Base64 library to our project.  
+Create a `libraries` package under `contracts` and create a file `Base64.sol` in it. You can find the content of this file [here](https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol).  
+After that import the library into our contract file.
 
 ```javascript
 import { Base64 } from "./libraries/Base64.sol";
 ```
 
-Finally we need to set the date to the NFT
+Finally, we need to set the date to the NFT
 
 
 ```javascript
@@ -301,7 +299,7 @@ To do that declare a new Event in our contract
 event NewNFTMinted(address sender, uint256 tokenId);
 ```
 
-and emit it at the end of your `makeAnEpicNFT` methode.
+and emit it at the end of your `makeAnEpicNFT` method.
 
 ```javascript
 emit NewNFTMinted(msg.sender, newItemId);
@@ -348,10 +346,10 @@ function makeAnEpicNFT(string memory srcTokenUri) public {
 That's cool and stuff but how can I test my code? Let's see that in the next chapter!
 
 
-## Test it !
+## Test it!
 Duration: 0:20:00
 
-To test our smart contract we can update the `run.mjs` script to create our contract then call our new methode `makeAnEpicNft`.
+To test our smart contract we can update the `run.mjs` script to create our contract then call our new method `makeAnEpicNft`.
 
 ```javascript
 const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
@@ -372,15 +370,15 @@ txn = await nftContract.makeAnEpicNFT(svg)
 await txn.wait()
 ```
 
-Here we used a png that is not store in an decentralized storage, but it's just for the test so it's not a probleme, you can used any png.
+Here we used a png that is not stored in decentralized storage, but it's just for the test so it's not a problem, you can use any png.
 
 Is it working? 🎉
 
-That's nice but I think we can have better test, can we unit test our contract? YES we can!
+That's nice but I think we can have better a test, can we unit-test our contract? YES, we can!
 
 Let's create a `MySmartContractSolTest.js` file under the package `test`
 
-We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.mjs` with some test at the end.  
+We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.mjs` with some tests at the end.  
 
 Here is the code:
 
@@ -408,14 +406,14 @@ describe('MyEpicSmartContract contract', function () {
 ```
 
 We basically:
-- `deploy` the contract on hardate test chain
-- call the methode `makeAnEpicNFT`
+- `deploy` the contract on Hardhat test chain
+- call the method `makeAnEpicNFT`
 - and expect an event to be fire, using chai `expect`
 
 To run it:
 
 ```javascript
-npx hardhat test
+yarn hardhat test
 ```
 
 Awesome we now have our smart contract tested 😎
@@ -424,32 +422,129 @@ Awesome we now have our smart contract tested 😎
 ## Deploy your smart contract 🚀
 Duration: 0:20:00
 
+Now that we have a working smart contract we want to deploy it on a real blockchain! So let's go 🚀
 
 
-### Get a Wallet ! And some ETH 💰
+### Get a Wallet! And some ETH 💰
 
+To deploy our smart contract we will need some Ethereum. Don't worry we will use the Goerli testnet of Ethereum so this will not cost us a penny!
+
+So if you don't already have a wallet, download the [metamask extension on 
+chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
+
+You will be guided on the setup phase by Metamask. When this part is done,
+switch to `Goerly network`, you should be on the Ethereum mainnet at first. If you don't see the `Goerly network` click on "Show/hide testnet".
+
+Once it's done you will see that you have 0 GoerliETH 😢
+
+So in order to get some GoerliETH you will have to request some in a faucet.
+
+This one should work https://goerlifaucet.com/, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
+
+If you got some eth let's go to the next part 🔥
 
 ### Deploy
 
+Deploying our contract is pretty much like running it with the `run.mjs` script thanks to Hardhat. 
+
+So let's create a new script `deploy.mjs`:
+
+```javascript
+const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
+const nftContract = await nftContractFactory.deploy();
+await nftContract.deployed();
+console.log("Contract deployed to:", nftContract.address);
+
+const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
+
+// Call the function.
+let txn = await nftContract.makeAnEpicNFT(svg)
+// Wait for it to be mined.
+await txn.wait()
+console.log("Minted NFT #1")
+```
+
+Now we have some setup to do.
+
+First, you need to update your `hardhat.config` file.
+We need to add a new network, here Goerly, add this in the `module.export`: 
+
+```javscript
+networks: {
+    goerli: {
+      url: process.env.STAGING_ALCHEMY_KEY_URL,
+      accounts: [process.env.PRIVATE_KEY],
+    },
+  },
+```
+
+Each time you want to deploy to a specific network you will need to add it like that in our Hardhat config. Pretty easy no?  
+You can deploy to every EVM-compatible blockchain like that, even a blockchain like Avalanche 😉
+
+You have surely noticed the `process.env`.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
+
+Add the `PRIVATE_KEY` value in a `.env` file, to get the value of our private key, go to metamask, click on the 3 dots next to our account, go to detail then click on "export private key".  
+⚠️⚠️⚠️ You should never share this key with anyone! Otherwise, some bad-intentioned people can still our account, and all that is within it!
+
+To get the `STAGING_ALCHEMY_KEY_URL` you need to log in to [Alchemy](https://dashboard.alchemy.com/) and then create a new 'app' with the create app button. You will be asked to choose a name, a description and a chain, do as you like for the name and description and choose the Ethereum chain with Goerli network, you will get an HTTPS URL, this is our `STAGING_ALCHEMY_KEY_URL` that you need to add in your `.env` file.  
+The alchemy app will act as a node to the Ethereum Goerli network to interact with the blockchain.
+
+
+Now that you set all the variables we need to add the `dotenv` dependency, in the `hardhat` folder run:
+
+```bash
+yarn add -D dotenv 
+```
+
+Then add the import on top of your Hardhat config file:
+
+```javascript
+require('dotenv').config();
+```
+
+Finally, run:
+
+```bash
+yarn hardhat run scripts/deploy.mjs --network goerli
+```
+
+You should get something like that:
+
+```bash
+Contract deployed to: 0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A
+Minted NFT #1
+```
+
+Awesome you have deployed your first smart contract in the real world! And mint an NFT.
+
+Now, head to https://testnets.opensea.io/.
+Create this URL: https://testnets.opensea.io/assets/goerli/INSERT_DEPLOY_CONTRACT_ADDRESS_HERE/TOKEN_ID
+
+Mine is: https://testnets.opensea.io/assets/goerli/0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A/0 (id start at 0!)
+
+And you should see your first duck NFT 🎉
+
+Opensea can take up to 15min to refresh so don't worry if you didn't see your NFT right away.
+
+It's EPIC, but kinda boring it's the same SVG. Let's interact with it and create our duck!
 
 
 ## Frontend setup ⚙️
 Duration: 0:05:00
 
 Ok, we worked on a smart contract. It's a lot of fun, but we have only a part of the job.
-What is the point of having a smart contract if nobody use it, right?
+What is the point of having a smart contract if nobody used it, right?
 
 That's why we are now building a frontend. Not all the frontend, since we just want to build a web3 integration
 on top of the [existing CrytoDuck made but our Zenika Teammate](https://pimpmyduck.zenika.com/).
 
 The frontend is made in React, but don't worry if you don't know. 
-We built for you the base components, you will just filled them. Doing that, we can focus 
-on what really matter here: interacting with the blockchain ⛓
+We built for you the base components, you will just fill them. By doing that, we can focus on what really matters here: interacting with the blockchain ⛓
 
-As we seen in introduction, we will work on `app` package.
+As we saw in the introduction, we will work on `app` package.
 
 First, let's start the front with `yarn start`. 
-The interface should open on `http://localhost:3000/`, and you already have an functional application
+The interface should open on `http://localhost:3000/`, and you already have a functional application
 to customize a duck, how cool is that?
 
 What we want to do in this interface is:
@@ -457,8 +552,8 @@ What we want to do in this interface is:
 - Connect our wallet to be able to interact with the wallet,
 - Add a `mint` button to let the user create an NFT from his custom duck. 
 
-To interact with the blockchain, we need few additional dependencies, let's install them,
-and them build some great stuff ✨
+To interact with the blockchain, we need a few additional dependencies, let's install them,
+and then build some great stuff ✨
 
 In the `app` folder, do the following command:
 
@@ -503,8 +598,8 @@ Then, wrap the whole JSX code in the `return` block by the web3 provider:
   )
 ```
 
-Note the provider take a property (commonly called `prop` in react) `getLibrary`.  
-It is mandatory to initiate the web3 library we want to use. This make `react-web3` agnostic of your
+Note the provider takes a property (commonly called `prop` in react) `getLibrary`.  
+It is mandatory to initiate the web3 library we want to use. This makes `react-web3` agnostic of your
 client library.  
 Here, we pass a function to initialize `Web3Provider` from `ethers`, the library commonly used.
 
@@ -523,16 +618,16 @@ This component will configure handle all the connection logic. In that, we will 
 Let's see what we have for now. 
 
 You can see some constants already declared: `AVALANCHE_TESTNET_PARAMS` and `ETHEREUM_TESTNET_PARAMS`.
-Those variable are network configuration. We've put them for you, but know you can find them on [chainlist](https://chainlist.org/).
+Those variables are network configuration. We've put them for you, but know you can find them on [chainlist](https://chainlist.org/).
 
-Then, we have a empty component. For now, it does not contain any logic, but some UI. 
+Then, we have an empty component. For now, it does not contain any logic, but some UI. 
 Here we can start working 💪.
 
-The fist step here is to remove the `return null` statement. You should now see the connect button display on the 
+The first step here is to remove the `return null` statement. You should now see the connect button displayed on the 
 interface.
 
 We've put a static variable `active` to `false`. We want to get this value from the wallet instead. 
-For that, we will call the `useWebReact` hook. This hook return an object containing an `active` property. 
+For that, we will call the `useWebReact` hook. This hook returns an object containing an `active` property. 
 Perfect, this is exactly what we want! 
 
 ```tsx
@@ -549,14 +644,15 @@ From the hook, we will get an additional property: `activate`
   const { active, activate } = useWeb3React<Web3Provider>()
 ```
 
-If we take a look at the activate signature, we can see it takes an argument `injected`. 
+If we take a look at the activated signature, we can see it takes an argument `injected`. 
 WTF is that?! 😱
 
-It is informations about the chains our application is able to use. 
-Chains informations make sense now!
+It is information about the chains our application can use. 
+
+Chains information makes sense now!
 
 We are going to declare a new variable `injected`, by instantiating a new `InjectedConnector`.  
-The constructor take an object, with the property `supportedChainIds`.
+The constructor takes an object, with the property `supportedChainIds`.
 
 ```tsx
 const injected = new InjectedConnector({
@@ -582,28 +678,22 @@ Time to test!
 ### Connection testing
 
 To test a wallet connection, you need to first have a Wallet.  
-So if you don't already have on, download the [metamask extension on 
-chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
-
-You will be guided on the setup phase by Metamask. When this part is done,
-switch to Goerly network. It is a testing network. 
-
-Now you're all set, let's go clicking our connect button. 
+You should already have one so, let's go click our connect button.   
 You should see a pop-up asking you to approve the connection to our website.
 If you accept, you should then see your address instead of the login button. 
 
 Awesome!
 
 If you wonder what's under the button, you can look for `Web3WalletButton`.  
-It calls the hook `useWeb3React`, and get the connected address, and the active props.
+It calls the hook `useWeb3React`, and gets the connected address, and the active props.
 
 From the `active` props, we decide what we display: a truncated address or a connection button.
 
-The parent component `Web3WalletConnector` display an additional logout button when we are connected.
+The parent component `Web3WalletConnector` displayed an additional logout button when we are connected.
 
-We still have to complete the disconnect behavior. 
+We still have to complete the disconnected behavior. 
 
-From the `useWeb3React`, get an other property: `disconnect`. It is a function. Call it from the 
+From the `useWeb3React`, get another property: `disconnect`. It is a function. Call it from the 
 disconnect function, and we are good! Good Job! 🙌
 
 ## Integrate and interact with your smart contract
