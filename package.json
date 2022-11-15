@@ -19,5 +19,11 @@
   "engines": {
     "yarn": ">=1.17.0",
     "node": ">=10.16.0"
-  }
+  },
+  "nohoist": [
+    "**/@nomiclabs/**",
+    "**/typescript",
+    "**/ts-node"
+  ],
+  "packageManager": "yarn@3.2.4"
 }
