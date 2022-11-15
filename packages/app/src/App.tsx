@@ -20,6 +20,7 @@ import AssetButton from './components/AssetButton'
 import UpdateApp from './components/UpdateApp'
 import useAssets from './useAssets'
 import styles from './App.module.css'
+import MintButton from './components/MintButton'
 
 function App() {
   const svgElement = useRef<SVGSVGElement>(null)
@@ -109,7 +110,7 @@ function App() {
           </div>
         </div>
         <div className={styles.actions}>
-          <button 
+          <button
             className={styles.circle}
             onClick={reset}
             title="Reset"
@@ -132,6 +133,7 @@ function App() {
           >
             <Download height="24px" width="24px" />
           </button>
+          <MintButton svgRef={svgElement} setIsLoading={() => { }} />
         </div>
         <UpdateApp />
       </main>

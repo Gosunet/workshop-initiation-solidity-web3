@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from "@ethersproject/providers";
 
-const CONTRACT_ADDRESS = '0xeF6FFDA727B7b8e3440e14f480bF35777788F56a'
+const CONTRACT_ADDRESS = '0x9a33FaeB62C3176Bd79aF99b4e3bc8933474b463'
 
 type MintProps = {
   svgRef: React.RefObject<SVGSVGElement>
@@ -17,7 +17,7 @@ type MintProps = {
 export const Mint: FC<MintProps> = ({ svgRef, setIsLoading }) => {
   const active = false
   const setupEventListener = useCallback(() => {
-  }, [provider])
+  }, [])
   const askContractToMintNft = async () => {
   }
 
@@ -41,16 +41,16 @@ async function uploadSvgToIPFS({
   svg,
   name,
 }: {
-  svg: string
+  svg: { src: string }
   name: string
 }) {
   const res = await axios.post(
     'https://biirzzx75m.execute-api.eu-west-3.amazonaws.com/Prod/pinIpfs/',
-    JSON.stringify({ name, rawSvg: svg }),
+    JSON.stringify({ name, rawSvg: svg.src }),
     {
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': `${process.env.AWS_APIKEY}`,
+        'x-api-key': `Ezc7yLacAz1V4OgIo9p191q76sS8fUqf0aVRQSl6`,
       },
     }
   )

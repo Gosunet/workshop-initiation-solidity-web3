@@ -33,6 +33,8 @@ const ETHEREUM_TESTNET_PARAMS = {
 }
 
 const Web3WalletConnector = () => {
+  const active = false
+  const error: any = null
 
   async function connect() {
   }
@@ -43,6 +45,8 @@ const Web3WalletConnector = () => {
   const isUnsupportedChainIdError = useMemo(() => {
     return error instanceof UnsupportedChainIdError
   }, [error])
+
+  return null
 
   return (
     <div className={styles.connector}>
