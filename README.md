@@ -15,7 +15,7 @@ In this workshop you will :
   - deploy a smart contract on an EVM compatible blockchain ⛓
   - integrate your smart contract in a small front-end application
 
-Just follow [this link](https://gosunet.github.io/workshop-initiation-solidity-web3/inititation-solidity-web3/index.html) to start the workshop.
+Just follow [this link](https://gosunet.github.io/workshop-initiation-solidity-web3/initiation-solidity-web3/index.html) to start the workshop.
 
 
 ## Install and serve a localhost version
