@@ -12,12 +12,12 @@ analytics account: Google Analytics ID
 ## Introduction
 Duration: 0:05:00
 
-Welcome in this initiation Solidity and Web3! Let's learn how a Smart Contract contract works! ⛵️
+Welcome to this initiation Solidity and Web3! Let's learn how a Smart Contract contract works! ⛵️
 
-We think those technologies are really empowering, and open a brend new world of possibilities
+We think those technologies are empowering, and open a brand new world of possibilities
 of what we can achieve as developers. It also brings more power into the hands of the user.
 
-We've made this project to have a better understanding of the NFT trend, and also to get our hand dirty.  
+We've made this project to have a better understanding of the NFT trend, and also to get our hands dirty.  
 
 Now you will too 😜
 
@@ -62,7 +62,7 @@ Now we've seen that, let's start building! 🚀
 
 If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardhat in terms of features.
 
-Because installing hardhat in a monorepo is a little bit tricky, we installed all needed dependencies for you.
+Because installing hardhat in a monorepo is a little bit tricky, we installed all the needed dependencies for you.
 
 You can still take a look at the dependencies listed in `packages/hardhat/package.json`.
 
@@ -571,8 +571,8 @@ yarn add @web3-react/core @web3-react/injected-connector ethers @ethersproject/p
 
 Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.
 
-Packages under `@web3-react/*` are bridge between react and client libraries such `ethers` 
-(we are using) or `web3` library. It give us 
+Packages under `@web3-react/*` are bridges between react and client libraries such `ethers` 
+(we are using) or `web3` library. It gives us 
 friendly tools to get a reactive state in react components.
 
 Now your probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
@@ -616,7 +616,7 @@ Great! Now we are able to discuss with the wallet in our React components!
 ### Connect to a wallet
 
 The next code to update will be the `Web3WalletConnector`.
-This component will configure handle all the connection logic. In that, we will find: 
+This component will configure and handle all the connection logic. In that, we will find: 
 
 - The chain configuration,
 - Displaying a connection button the user is not connected,
@@ -657,7 +657,7 @@ WTF is that?! 😱
 
 It is information about the chains our application can use. 
 
-Chains information makes sense now!
+Chains' information makes sense now!
 
 We are going to declare a new variable `injected`, by instantiating a new `InjectedConnector`.  
 The constructor takes an object, with the property `supportedChainIds`.
@@ -787,7 +787,7 @@ This constructor takes 3 arguments:
 - The contract ABI (Application Binary Interface). It is a sub-part of the JSON artifact we talked about before,
 - The `signer` variable we created before. It will be used to sign transactions.
 
-Let's fill them one by one.  
+Let's fill them in one by one.  
 
 On the top of the file, we've created a `CONTRACT_ADDRESS` constant to replace. Put here the contract address 
 you got when you deployed your contract.  
@@ -824,7 +824,7 @@ of the method called (here the token id is a big number).
 
 > ℹ️ to get the number of our token from a BigNumber, we need to call `toNumber` method on it.
 
-Our UI will be simple. We will display an alert with the received informations.
+Our UI will be simple. We will display an alert with the received information.
 
 ```tsx
     contract.on('NewNFTMinted', (from, tokenId) => {
@@ -921,7 +921,7 @@ We will repeat it here.
 Nooooooow, we can create a transaction 🔥
 
 Before we was listening to an event, so we called `on` the method. Here to call a distributed method,
-we can directly call the method directly on the contract instance.  
+we can directly call the method on the contract instance.  
 
 If your IDE does not autocomplete, it's normal, the contract does not infer our ABI, and it's really
 sad 😭. 
@@ -947,16 +947,16 @@ TIME TO TEST!
 ## Bonus
 Duration: 0:15:00
 
-As bonus, you can update the smart-contract to add new features.  
-Feel free to invent one! The distributed technologies offers endless possibilities!
+As a bonus, you can update the smart-contract to add new features.  
+Feel free to invent one! Distributed technologies offer endless possibilities!
 
-Here is few ideas:
+Here are some ideas:
 
 - Restrict the mint to one NFT per user,
 - Limit the total amount of ducks possibles (rarity),
 - Store duck properties  
-  This will allow another types of possibilities:
-  - Have some inheritance ; a duck could inherit some properties of his parent,
+  This will allow other possibilities:
+  - Have some inheritance, a duck could inherit some properties of his parent,
   - Turn them into fighting ducks with combat properties,
   - etc...
 

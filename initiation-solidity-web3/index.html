@@ -28,9 +28,9 @@
                   feedback-link="https://github.com/Gosunet/workshop-initiation-solidity-web3">
     
       <google-codelab-step label="Introduction" duration="5">
-        <p>Welcome in this initiation Solidity and Web3! Let&#39;s learn how a Smart Contract contract works! ⛵️</p>
-<p>We think those technologies are really empowering, and open a brend new world of possibilities of what we can achieve as developers. It also brings more power into the hands of the user.</p>
-<p>We&#39;ve made this project to have a better understanding of the NFT trend, and also to get our hand dirty.</p>
+        <p>Welcome to this initiation Solidity and Web3! Let&#39;s learn how a Smart Contract contract works! ⛵️</p>
+<p>We think those technologies are empowering, and open a brand new world of possibilities of what we can achieve as developers. It also brings more power into the hands of the user.</p>
+<p>We&#39;ve made this project to have a better understanding of the NFT trend, and also to get our hands dirty.</p>
 <p>Now you will too 😜</p>
 <p>During this workshop you will:</p>
 <ul>
@@ -63,7 +63,7 @@
 <li>deploy our smart contract</li>
 </ul>
 <p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardhat in terms of features.</p>
-<p>Because installing hardhat in a monorepo is a little bit tricky, we installed all needed dependencies for you.</p>
+<p>Because installing hardhat in a monorepo is a little bit tricky, we installed all the needed dependencies for you.</p>
 <p>You can still take a look at the dependencies listed in <code>packages/hardhat/package.json</code>.</p>
 <p>Now is the time to init hardhat in your <code>packages/hardhat</code> folder</p>
 <pre><code language="language-sh" class="language-sh">cd packages/hardhat
@@ -395,7 +395,7 @@ Minted NFT #1
 <pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector ethers @ethersproject/providers 
 </code></pre>
 <p>Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.</p>
-<p>Packages under <code>@web3-react/*</code> are bridge between react and client libraries such <code>ethers</code> (we are using) or <code>web3</code> library. It give us friendly tools to get a reactive state in react components.</p>
+<p>Packages under <code>@web3-react/*</code> are bridges between react and client libraries such <code>ethers</code> (we are using) or <code>web3</code> library. It gives us friendly tools to get a reactive state in react components.</p>
 <p>Now your probably want to yell at us: &#34;GIVE ME SOME CODE!&#34;. We&#39;re getting there, don&#39;t worry 😉</p>
 
 
@@ -421,7 +421,7 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <p>Note the provider takes a property (commonly called <code>prop</code> in react) <code>getLibrary</code>.<br> It is mandatory to initiate the web3 library we want to use. This makes <code>react-web3</code> agnostic of your client library.<br> Here, we pass a function to initialize <code>Web3Provider</code> from <code>ethers</code>, the library commonly used.</p>
 <p>Great! Now we are able to discuss with the wallet in our React components!</p>
 <h2 is-upgraded>Connect to a wallet</h2>
-<p>The next code to update will be the <code>Web3WalletConnector</code>. This component will configure handle all the connection logic. In that, we will find:</p>
+<p>The next code to update will be the <code>Web3WalletConnector</code>. This component will configure and handle all the connection logic. In that, we will find:</p>
 <ul>
 <li>The chain configuration,</li>
 <li>Displaying a connection button the user is not connected,</li>
@@ -441,7 +441,7 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 </code></pre>
 <p>If we take a look at the activated signature, we can see it takes an argument <code>injected</code>. WTF is that?! 😱</p>
 <p>It is information about the chains our application can use.</p>
-<p>Chains information makes sense now!</p>
+<p>Chains&#39; information makes sense now!</p>
 <p>We are going to declare a new variable <code>injected</code>, by instantiating a new <code>InjectedConnector</code>.<br> The constructor takes an object, with the property <code>supportedChainIds</code>.</p>
 <pre><code language="language-tsx" class="language-tsx">const injected = new InjectedConnector({
   supportedChainIds: [
@@ -512,7 +512,7 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <li>The contract ABI (Application Binary Interface). It is a sub-part of the JSON artifact we talked about before,</li>
 <li>The <code>signer</code> variable we created before. It will be used to sign transactions.</li>
 </ul>
-<p>Let&#39;s fill them one by one.</p>
+<p>Let&#39;s fill them in one by one.</p>
 <p>On the top of the file, we&#39;ve created a <code>CONTRACT_ADDRESS</code> constant to replace. Put here the contract address you got when you deployed your contract.</p>
 <p>For the ABI, it should be on the contract package. Let&#39;s copy the <code>MyEpicSmartContract.json</code> in the <code>src</code> folder, and then import it.</p>
 <pre><code language="language-bash" class="language-bash"># this assume your shell location is in the root folder
@@ -531,7 +531,7 @@ cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContr
 </code></pre>
 <p>Now we have a contract client instance, we can interact with our contract!<br> To listen to events, we need to call the <code>on</code> method and pass it our event name <code>NewNFTMinted</code> as the first parameter, and a callback as the second parameter.<br> The first argument of the callback is the contract address, and the second is the return type of the method called (here the token id is a big number).</p>
 <p>ℹ️ to get the number of our token from a BigNumber, we need to call <code>toNumber</code> method on it.</p>
-<p>Our UI will be simple. We will display an alert with the received informations.</p>
+<p>Our UI will be simple. We will display an alert with the received information.</p>
 <pre><code language="language-tsx" class="language-tsx">    contract.on(&#39;NewNFTMinted&#39;, (from, tokenId) =&gt; {
       console.log(from, tokenId.toNumber())
       alert(
@@ -580,7 +580,7 @@ cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContr
     )
 </code></pre>
 <p>Nooooooow, we can create a transaction 🔥</p>
-<p>Before we was listening to an event, so we called <code>on</code> the method. Here to call a distributed method, we can directly call the method directly on the contract instance.</p>
+<p>Before we was listening to an event, so we called <code>on</code> the method. Here to call a distributed method, we can directly call the method on the contract instance.</p>
 <p>If your IDE does not autocomplete, it&#39;s normal, the contract does not infer our ABI, and it&#39;s really sad 😭.</p>
 <pre><code language="language-tsx" class="language-tsx">    const nftTxn = await connectedContract.makeAnEpicNFT(`ipfs://${cid}`)
 </code></pre>
@@ -596,13 +596,13 @@ cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContr
       </google-codelab-step>
     
       <google-codelab-step label="Bonus" duration="15">
-        <p>As bonus, you can update the smart-contract to add new features.<br> Feel free to invent one! The distributed technologies offers endless possibilities!</p>
-<p>Here is few ideas:</p>
+        <p>As a bonus, you can update the smart-contract to add new features.<br> Feel free to invent one! Distributed technologies offer endless possibilities!</p>
+<p>Here are some ideas:</p>
 <ul>
 <li>Restrict the mint to one NFT per user,</li>
 <li>Limit the total amount of ducks possibles (rarity),</li>
-<li>Store duck properties<br> This will allow another types of possibilities: <ul>
-<li>Have some inheritance ; a duck could inherit some properties of his parent,</li>
+<li>Store duck properties<br> This will allow other possibilities: <ul>
+<li>Have some inheritance, a duck could inherit some properties of his parent,</li>
 <li>Turn them into fighting ducks with combat properties,</li>
 <li>etc...</li>
 </ul>
