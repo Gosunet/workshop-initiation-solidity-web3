@@ -39,7 +39,7 @@
 <li>deploy it on a real blockchain</li>
 <li>integrate and interact with it in a small react application using web3.js</li>
 </ul>
-<p>To make this workshop more fun we will use a <a href="https://pimpmyduck.zenika.com/" target="_blank"> small site made by Zenika </a> that allows us to customize a duck 🦆 .</p>
+<p>To make this workshop more fun we will use a <a href="https://pimpmyduck.zenika.com/" target="_blank">small site made by Zenika</a> that allows us to customize a duck 🦆 .</p>
 <p>What we want to do here is to create an NFT based on our custom duck! That will make us explore all the things we list above. 🙌</p>
 <p>Are you ready? Let&#39;s go! 🚀</p>
 
@@ -63,12 +63,11 @@
 <li>deploy our smart contract</li>
 </ul>
 <p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardhat in terms of features.</p>
-<p>Install Hardhat</p>
-<pre><code language="language-sh" class="language-sh">yarn workspace src add -D hardhat
-</code></pre>
-<p>if you need to install yarn before <code>npm install --global yarn</code></p>
-<p>Then init hardhat in your <code>package/src</code> folder</p>
-<pre><code language="language-sh" class="language-sh">yarn hardhat
+<p>Because installing hardhat in a monorepo is a little bit tricky, we installed all needed dependencies for you.</p>
+<p>You can still take a look at the dependencies listed in <code>packages/hardhat/package.json</code>.</p>
+<p>Now is the time to init hardhat in your <code>packages/hardhat</code> folder</p>
+<pre><code language="language-sh" class="language-sh">cd packages/hardhat
+yarn hardhat
 </code></pre>
 <p>This will create folders :</p>
 <ul>
@@ -85,7 +84,7 @@
 <pre><code language="language-sh" class="language-sh"> yarn hardhat test
 </code></pre>
 <p>You should see a bunch of tests succeeded 🎉</p>
-<p>You can now delete Lock.js under test, deploy.js under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
+<p>You can now delete <code>Lock.js</code> under test, deploy.js under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
 
 
       </google-codelab-step>
@@ -108,7 +107,8 @@ contract MyEpicSmartContract {
 <p>If you use visual code you can install the <a href="https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project" target="_blank">solidity extension</a> for syntax highlighting.</p>
 <p>Congratulation you have officially written your first smart contract 🥳<br> Easy no?</p>
 <p>The next step is to compile our smart contract, to do so run <code>yarn hardhat compile</code>.</p>
-<p>Now it&#39;s our turn to work!<br> Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. Then another function <code>sayHello</code> will simply use the name you just set and print <code>Hello ${name}</code> in the console.<br> Here is a link to the <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">solidity doc</a> to help you with that.</p>
+<p>Now it&#39;s our turn to work!</p>
+<p>Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. Then another function <code>sayHello</code> will simply use the name you just set and print <code>Hello ${name}</code> in the console.<br> Here is a link to the <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">solidity doc</a> to help you with that.</p>
 <h2 is-upgraded>A script to run our contract</h2>
 <p>Hardhat allows us to deploy our smart contract in a local blockchain, and it allows us to do it very easily.</p>
 <p>We just have to write a small script to do that, so let&#39;s go!</p>
@@ -119,7 +119,7 @@ await contract.deployed();
 console.log(&#34;Contract deployed to:&#34;, contract.address);
 
 // Call the function.
-let txn = await contract.setName(&#34;Guillaume&#34;)
+let txn = await contract.setName(&#34;Fellow Codeur (en seine)&#34;)
 // Wait for it to be finished.
 await txn.wait()
 // Call another function
@@ -129,7 +129,7 @@ await contract.sayHello()
 <p>You should get something like that!</p>
 <pre><code language="language-bash" class="language-bash">Hello World !
 Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-Hello Guillaume
+Hello Fellow Codeur (en seine)
 </code></pre>
 <p><code>0x5FbDB2315678afecb367f032d93F642f64180aa3</code> here is the contract address in our local blockchain where the contract was deployed.</p>
 
@@ -184,11 +184,9 @@ Counters.Counter private _tokenIds;
 <p>We want our NFT to have an image, to do that we will create a <code>payload</code> that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like <a href="https://opensea.io/" target="_blank">OpenSea</a>. We also want our payload to be as tiny as possible, that&#39;s why we will encode it in base64.</p>
 <pre><code language="language-javascript" class="language-javascript">// Get all the JSON metadata in place and base64 encode it.
 string memory json = Base64.encode(
-    bytes(
-        string(
-            abi.encodePacked(
-                &#39;{&#34;name&#34;: &#34;Crypto Duck&#34;, &#34;description&#34;: &#34;A magnificent crypto duck.&#34;, &#34;image&#34;: &#34;&#39;, srcTokenUri, &#39;&#34;}&#39;
-            )
+    string(
+        abi.encodePacked(
+            &#39;{&#34;name&#34;: &#34;Crypto Duck&#34;, &#34;description&#34;: &#34;A magnificent crypto duck.&#34;, &#34;image&#34;: &#34;&#39;, srcTokenUri, &#39;&#34;}&#39;
         )
     )
 );
@@ -327,7 +325,7 @@ describe(&#39;MyEpicSmartContract contract&#39;, function () {
 <p>You will be guided on the setup phase by Metamask. When this part is done, switch to <code>Goerly network</code>, you should be on the Ethereum mainnet at first. If you don&#39;t see the <code>Goerly network</code> click on &#34;Show/hide testnet&#34;.</p>
 <p>Once it&#39;s done you will see that you have 0 GoerliETH 😢</p>
 <p>So in order to get some GoerliETH you will have to request some in a faucet.</p>
-<p>This one should work https://goerlifaucet.com/, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).</p>
+<p>This one should work <a href="https://goerlifaucet.com/" target="_blank">https://goerlifaucet.com/</a>, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).</p>
 <p>If you got some eth let&#39;s go to the next part 🔥</p>
 <h2 is-upgraded>Deploy</h2>
 <p>Deploying our contract is pretty much like running it with the <code>run.mjs</code> script thanks to Hardhat.</p>
@@ -355,7 +353,7 @@ console.log(&#34;Minted NFT #1&#34;)
   },
 </code></pre>
 <p>Each time you want to deploy to a specific network you will need to add it like that in our Hardhat config. Pretty easy no?<br> You can deploy to every EVM-compatible blockchain like that, even a blockchain like Avalanche 😉</p>
-<p>You have surely noticed the <code>process.env</code>.STAGING_ALCHEMY_KEY_URL<code>and</code>process.env.PRIVATE_KEY` values.</p>
+<p>You have surely noticed the <code>process.env.STAGING_ALCHEMY_KEY_URL</code> and <code>process.env.PRIVATE_KEY</code> values.</p>
 <p>Add the <code>PRIVATE_KEY</code> value in a <code>.env</code> file, to get the value of our private key, go to metamask, click on the 3 dots next to our account, go to detail then click on &#34;export private key&#34;.<br> ⚠️⚠️⚠️ You should never share this key with anyone! Otherwise, some bad-intentioned people can still our account, and all that is within it!</p>
 <p>To get the <code>STAGING_ALCHEMY_KEY_URL</code> you need to log in to <a href="https://dashboard.alchemy.com/" target="_blank">Alchemy</a> and then create a new ‘app&#39; with the create app button. You will be asked to choose a name, a description and a chain, do as you like for the name and description and choose the Ethereum chain with Goerli network, you will get an HTTPS URL, this is our <code>STAGING_ALCHEMY_KEY_URL</code> that you need to add in your <code>.env</code> file.<br> The alchemy app will act as a node to the Ethereum Goerli network to interact with the blockchain.</p>
 <p>Now that you set all the variables we need to add the <code>dotenv</code> dependency, in the <code>hardhat</code> folder run:</p>
@@ -438,8 +436,8 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <pre><code language="language-tsx" class="language-tsx">  const { active } = useWeb3React&lt;Web3Provider&gt;()
 </code></pre>
 <p>Ok, now we know if we are connected directly from the wallet, nice. But, as we are not connected, we want to handle the connection. For that, the goal is to fill the <code>connect</code> function.</p>
-<p>From the hook, we will get an additional property: <code>activate</code></p>
-<pre><code language="language-tsx" class="language-tsx">  const { active, activate } = useWeb3React&lt;Web3Provider&gt;()
+<p>From the hook, we will get additionals properties: <code>activate</code> and <code>error</code></p>
+<pre><code language="language-tsx" class="language-tsx">  const { active, activate, error } = useWeb3React&lt;Web3Provider&gt;()
 </code></pre>
 <p>If we take a look at the activated signature, we can see it takes an argument <code>injected</code>. WTF is that?! 😱</p>
 <p>It is information about the chains our application can use.</p>
@@ -495,13 +493,13 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <h2 is-upgraded>Event Listener</h2>
 <p>First, the variable <code>provider</code> can be <code>undefined</code>, so we need to verify it isn&#39;t.</p>
 <pre><code language="language-ts" class="language-ts">  const setupEventListener = useCallback(() =&gt; {
-    if (!provider) {
+    if (!library) {
       return
     }
   }
 </code></pre>
 <p>Then, because of the inherited behavior of <code>ethers</code> library, we need to get the transaction <code>signer</code>.</p>
-<pre><code language="language-tsx" class="language-tsx">    const signer = provider.getSigner()
+<pre><code language="language-tsx" class="language-tsx">    const signer = library.getSigner()
 </code></pre>
 <p>Secondly, we will create a contract client instance.</p>
 <pre><code language="language-ts" class="language-ts">    const connectedContract = new Contract(
@@ -516,15 +514,15 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 </ul>
 <p>Let&#39;s fill them one by one.</p>
 <p>On the top of the file, we&#39;ve created a <code>CONTRACT_ADDRESS</code> constant to replace. Put here the contract address you got when you deployed your contract.</p>
-<p>For the ABI, it should be on the contract package. Let&#39;s copy the <code>CryptoDuck.json</code> in the <code>src</code> folder, and then import it.</p>
+<p>For the ABI, it should be on the contract package. Let&#39;s copy the <code>MyEpicSmartContract.json</code> in the <code>src</code> folder, and then import it.</p>
 <pre><code language="language-bash" class="language-bash"># this assume your shell location is in the root folder
-cp packages/nft/artifacts/contracts/CryptoDuck.json packages/app/src
+cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContract.json packages/app/src 
 </code></pre>
-<pre><code language="language-tsx" class="language-tsx">import myEpicNft from &#39;../abi/CryptoDuck.json&#39;
+<pre><code language="language-tsx" class="language-tsx">import myEpicNft from &#39;../MyEpicSmartContract.json&#39;
 </code></pre>
 <p>And for the signers, we&#39;ve created a variable for it, perfect!</p>
 <p>We should have this:</p>
-<pre><code language="language-tsx" class="language-tsx">    const signer = provider.getSigner()
+<pre><code language="language-tsx" class="language-tsx">    const signer = library.getSigner()
     const contract = new Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
@@ -542,6 +540,7 @@ cp packages/nft/artifacts/contracts/CryptoDuck.json packages/app/src
     })
 </code></pre>
 <p>ℹ️ The <code>ethers</code> library used under the hood is not perfect here, and we loose our strong typing 😭</p>
+<p>Finally, add <code>library</code> in the dependency array of <code>useCallback</code>. This tells to react to recompute the function if the <code>library</code> changes.</p>
 <p>🙌 We have a listener set up! 🙌 But we can&#39;t test it without minting an NFT, so let&#39;s do that!</p>
 <h2 is-upgraded>LET&#39;S MINT</h2>
 <p>Here we go! The final part!</p>
@@ -573,7 +572,7 @@ cp packages/nft/artifacts/contracts/CryptoDuck.json packages/app/src
 <ul>
 <li>&#34;Gnagnagna that&#39;s a code duplication&#34; YES IT IS! Two time duplication is ok, if this code was repeated 3,4,5 times, we would have created an abstraction.</li>
 </ul>
-<pre><code language="language-tsx" class="language-tsx">    const signer = provider.getSigner()
+<pre><code language="language-tsx" class="language-tsx">    const signer = library.getSigner()
     const connectedContract = new ethers.Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
