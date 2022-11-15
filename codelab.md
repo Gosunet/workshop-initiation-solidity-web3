@@ -9,19 +9,30 @@ analytics account: Google Analytics ID
 
 # Initiation solidity and Web3.0
 
+## Introduction
+Duration: 0:05:00
 
-Let's learn how a Smart Contract contract works! ⛵️
+Welcome in this initiation Solidity and Web3! Let's learn how a Smart Contract contract works! ⛵️
 
-During this workshop you will :
+We think those technologies are really empowering, and open a brend new world of possibilities
+of what we can achieve as developers. It also brings more power into the hands of the user.
+
+We've made this project to have a better understanding of the NFT trend, and also to get our hand dirty.  
+
+Now you will too 😜
+
+During this workshop you will:
+
 - create your first Solidity smart contract
 - test our contract
 - deploy it on a real blockchain
 - integrate and interact with it in a small react application using web3.js
 
-To make this workshop more fun we will use a small site made by Zenika that allows us to customize a duck 🦆 https://pimpmyduck.zenika.com/.
-
+To make this workshop more fun we will use a [ small site made by Zenika ](https://pimpmyduck.zenika.com/) that allows us to customize a duck 🦆 .
 
 What we want to do here is to create an NFT based on our custom duck! That will make us explore all the things we list above. 🙌
+
+Are you ready? Let's go! 🚀
 
 ## Init your project 🔨
 Duration: 0:05:00
