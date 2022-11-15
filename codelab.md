@@ -28,7 +28,7 @@ During this workshop you will:
 - deploy it on a real blockchain
 - integrate and interact with it in a small react application using web3.js
 
-To make this workshop more fun we will use a [ small site made by Zenika ](https://pimpmyduck.zenika.com/) that allows us to customize a duck 🦆 .
+To make this workshop more fun we will use a [small site made by Zenika](https://pimpmyduck.zenika.com/) that allows us to customize a duck 🦆 .
 
 What we want to do here is to create an NFT based on our custom duck! That will make us explore all the things we list above. 🙌
 
@@ -62,15 +62,13 @@ Now we've seen that, let's start building! 🚀
 
 If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardhat in terms of features.
 
-Install Hardhat 
-```sh
-yarn workspace src add -D hardhat
-```
+Because installing hardhat in a monorepo is a little bit tricky, we installed all needed dependencies for you.
 
-> if you need to install yarn before `npm install --global yarn`
+You can still take a look at the dependencies listed in `packages/hardhat/package.json`.
 
-Then init hardhat in your `package/src` folder 
+Now is the time to init hardhat in your `packages/hardhat` folder 
 ```sh
+cd packages/hardhat
 yarn hardhat
 ```
 
@@ -97,7 +95,7 @@ Then run:
 
 You should see a bunch of tests succeeded 🎉
 
-You can now delete Lock.js under test, deploy.js under scripts and `Lock.sol` under contracts. (not the folder!)
+You can now delete `Lock.js` under test, deploy.js under scripts and `Lock.sol` under contracts. (not the folder!)
 
 ## Write your first smart contract 🆕
 Duration: 0:20:00
@@ -133,6 +131,7 @@ Easy no?
 The next step is to compile our smart contract, to do so run `yarn hardhat compile`.
 
 Now it's our turn to work!  
+
 Let's create a small function to set an attribute `name` into our smart contract. Then another function `sayHello` will simply use the name you just set and print `Hello ${name}` in the console.  
 Here is a link to the [solidity doc](https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html) to help you with that.
 
@@ -151,7 +150,7 @@ await contract.deployed();
 console.log("Contract deployed to:", contract.address);
 
 // Call the function.
-let txn = await contract.setName("Guillaume")
+let txn = await contract.setName("Fellow Codeur (en seine)")
 // Wait for it to be finished.
 await txn.wait()
 // Call another function
@@ -165,7 +164,7 @@ You should get something like that!
 ```bash
 Hello World !
 Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-Hello Guillaume
+Hello Fellow Codeur (en seine)
 ```
 
 `0x5FbDB2315678afecb367f032d93F642f64180aa3` here is the contract address in our local blockchain where the contract was deployed.
@@ -260,11 +259,9 @@ We want our NFT to have an image, to do that we will create a `payload` that res
 ```javascript
 // Get all the JSON metadata in place and base64 encode it.
 string memory json = Base64.encode(
-    bytes(
-        string(
-            abi.encodePacked(
-                '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
-            )
+    string(
+        abi.encodePacked(
+            '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
         )
     )
 );
@@ -450,7 +447,7 @@ Once it's done you will see that you have 0 GoerliETH 😢
 
 So in order to get some GoerliETH you will have to request some in a faucet.
 
-This one should work https://goerlifaucet.com/, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
+This one should work [https://goerlifaucet.com/](https://goerlifaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
 
 If you got some eth let's go to the next part 🔥
 
@@ -492,7 +489,7 @@ networks: {
 Each time you want to deploy to a specific network you will need to add it like that in our Hardhat config. Pretty easy no?  
 You can deploy to every EVM-compatible blockchain like that, even a blockchain like Avalanche 😉
 
-You have surely noticed the `process.env`.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
+You have surely noticed the `process.env.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
 
 Add the `PRIVATE_KEY` value in a `.env` file, to get the value of our private key, go to metamask, click on the 3 dots next to our account, go to detail then click on "export private key".  
 ⚠️⚠️⚠️ You should never share this key with anyone! Otherwise, some bad-intentioned people can still our account, and all that is within it!
@@ -649,10 +646,10 @@ Ok, now we know if we are connected directly from the wallet, nice.
 But, as we are not connected, we want to handle the connection. 
 For that, the goal is to fill the `connect` function.  
 
-From the hook, we will get an additional property: `activate`
+From the hook, we will get additionals properties: `activate` and `error`
 
 ```tsx
-  const { active, activate } = useWeb3React<Web3Provider>()
+  const { active, activate, error } = useWeb3React<Web3Provider>()
 ```
 
 If we take a look at the activated signature, we can see it takes an argument `injected`. 
@@ -764,7 +761,7 @@ First, the variable `provider` can be `undefined`, so we need to verify it isn't
 
 ```ts
   const setupEventListener = useCallback(() => {
-    if (!provider) {
+    if (!library) {
       return
     }
   }
@@ -773,7 +770,7 @@ First, the variable `provider` can be `undefined`, so we need to verify it isn't
 Then, because of the inherited behavior of `ethers` library, we need to get the transaction `signer`.  
 
 ```tsx
-    const signer = provider.getSigner()
+    const signer = library.getSigner()
 ```
 
 Secondly, we will create a contract client instance.  
@@ -795,16 +792,16 @@ Let's fill them one by one.
 On the top of the file, we've created a `CONTRACT_ADDRESS` constant to replace. Put here the contract address 
 you got when you deployed your contract.  
 
-For the ABI, it should be on the contract package. Let's copy the `CryptoDuck.json` in the `src` folder, 
+For the ABI, it should be on the contract package. Let's copy the `MyEpicSmartContract.json` in the `src` folder, 
 and then import it.  
 
 ```bash
 # this assume your shell location is in the root folder
-cp packages/nft/artifacts/contracts/CryptoDuck.json packages/app/src
+cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContract.json packages/app/src 
 ```
 
 ```tsx
-import myEpicNft from '../abi/CryptoDuck.json'
+import myEpicNft from '../MyEpicSmartContract.json'
 ```
 
 And for the signers, we've created a variable for it, perfect!  
@@ -812,7 +809,7 @@ And for the signers, we've created a variable for it, perfect!
 We should have this: 
 
 ```tsx
-    const signer = provider.getSigner()
+    const signer = library.getSigner()
     const contract = new Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
@@ -839,6 +836,8 @@ Our UI will be simple. We will display an alert with the received informations.
 ```
 
 > ℹ️ The `ethers` library used under the hood is not perfect here, and we loose our strong typing 😭
+
+Finally, add `library` in the dependency array of `useCallback`. This tells to react to recompute the function if the `library` changes.
 
 🙌 We have a listener set up! 🙌 But we can't test it without minting an NFT, so let's do that!
 
@@ -911,7 +910,7 @@ We will repeat it here.
 > we would have created an abstraction.
 
 ```tsx
-    const signer = provider.getSigner()
+    const signer = library.getSigner()
     const connectedContract = new ethers.Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
