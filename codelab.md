@@ -937,5 +937,20 @@ TIME TO TEST!
 ## Bonus
 Duration: 0:15:00
 
+As bonus, you can update the smart-contract to add new features.  
+Feel free to invent one! The distributed technologies offers endless possibilities!
 
+Here is few ideas:
+
+- Restrict the mint to one NFT per user,
+- Limit the total amount of ducks possibles (rarity),
+- Store duck properties  
+  This will allow another types of possibilities:
+  - Have some inheritance ; a duck could inherit some properties of his parent,
+  - Turn them into fighting ducks with combat properties,
+  - etc...
+
+We're not guiding you for the bonus, but feel free to reach out for help 🤜🤛
+
+And at the end, tell us what you've made 🫶.
 
