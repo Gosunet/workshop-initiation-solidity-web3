@@ -104,7 +104,7 @@ contract MyEpicSmartContract {
     }
 }
 </code></pre>
-<p>If you use visual code you can install the <a href="https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project" target="_blank">solidity extension</a> for syntax highlighting.</p>
+<p>ℹ️ If you use visual code you can install the <a href="https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project" target="_blank">solidity extension</a> for syntax highlighting.</p>
 <p>Congratulation you have officially written your first smart contract 🥳<br> Easy no?</p>
 <p>The next step is to compile our smart contract, to do so run <code>yarn hardhat compile</code>.</p>
 <p>Now it&#39;s our turn to work!</p>
@@ -163,7 +163,7 @@ contract MyEpicSmartContract is ERC721URIStorage {
 <p>You will see that here we need to call the <code>ERC721</code> contract constructor with two strings, one for the name of our NFT token, and the other one for the symbol of our collection.</p>
 <p>Feel free to name it as you want 😉</p>
 <p>Now we can use the <code>ERC721</code> contract method!<br> Let&#39;s create the method that we will call to create our NFT that will represent our custom duck.<br> We don&#39;t want to store the whole duck SVG in our contract because storage in the blockchain costs money 💰 so we will only store the URL to access our duck SVG.</p>
-<p>Remember that data in the blockchain are immutable, this is why it&#39;s important that our url will be accessible FOREVER ! That&#39;s why it&#39;s strongly recommended to stare our image in a decentralized store file systeme like IPFS.</p>
+<p>ℹ️ Remember that data in the blockchain are immutable, this is why it&#39;s important that our url will be accessible FOREVER ! That&#39;s why it&#39;s strongly recommended to stare our image in a decentralized store file systeme like IPFS.</p>
 <pre><code language="language-javascript" class="language-javascript">function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
@@ -321,7 +321,7 @@ describe(&#39;MyEpicSmartContract contract&#39;, function () {
         <p>Now that we have a working smart contract we want to deploy it on a real blockchain! So let&#39;s go 🚀</p>
 <h2 is-upgraded>Get a Wallet! And some ETH 💰</h2>
 <p>To deploy our smart contract we will need some Ethereum. Don&#39;t worry we will use the Goerli testnet of Ethereum so this will not cost us a penny!</p>
-<p>So if you don&#39;t already have a wallet, download the <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr" target="_blank">metamask extension on chrome web store</a>.</p>
+<p>So if you don&#39;t already have a wallet, download the <a href="https://metamask.io/download/" target="_blank">metamask extension</a>.</p>
 <p>You will be guided on the setup phase by Metamask. When this part is done, switch to <code>Goerly network</code>, you should be on the Ethereum mainnet at first. If you don&#39;t see the <code>Goerly network</code> click on &#34;Show/hide testnet&#34;.</p>
 <p>Once it&#39;s done you will see that you have 0 GoerliETH 😢</p>
 <p>So in order to get some GoerliETH you will have to request some in a faucet.</p>

@@ -122,7 +122,7 @@ contract MyEpicSmartContract {
 ```
 
 
-> If you use visual code you can install the [solidity extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project) for syntax highlighting.
+ℹ️ If you use visual code you can install the [solidity extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project) for syntax highlighting.
 
 
 Congratulation you have officially written your first smart contract 🥳  
@@ -220,7 +220,7 @@ Now we can use the `ERC721` contract method!
 Let's create the method that we will call to create our NFT that will represent our custom duck.  
 We don't want to store the whole duck SVG in our contract because storage in the blockchain costs money 💰 so we will only store the URL to access our duck SVG. 
 
-> Remember that data in the blockchain are immutable, this is why it's important that our url will be accessible FOREVER ! That's why it's strongly recommended to stare our image in a decentralized store file systeme like IPFS.
+ℹ️ Remember that data in the blockchain are immutable, this is why it's important that our url will be accessible FOREVER ! That's why it's strongly recommended to stare our image in a decentralized store file systeme like IPFS.
 
 
 ```javascript
@@ -437,8 +437,7 @@ Now that we have a working smart contract we want to deploy it on a real blockch
 
 To deploy our smart contract we will need some Ethereum. Don't worry we will use the Goerli testnet of Ethereum so this will not cost us a penny!
 
-So if you don't already have a wallet, download the [metamask extension on 
-chrome web store](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=fr).
+So if you don't already have a wallet, download the [metamask extension](https://metamask.io/download/).
 
 You will be guided on the setup phase by Metamask. When this part is done,
 switch to `Goerly network`, you should be on the Ethereum mainnet at first. If you don't see the `Goerly network` click on "Show/hide testnet".
@@ -822,7 +821,7 @@ To listen to events, we need to call the `on` method and pass it our event name 
 The first argument of the callback is the contract address, and the second is the return type 
 of the method called (here the token id is a big number).
 
-> ℹ️ to get the number of our token from a BigNumber, we need to call `toNumber` method on it.
+ℹ️ to get the number of our token from a BigNumber, we need to call `toNumber` method on it.
 
 Our UI will be simple. We will display an alert with the received information.
 
@@ -835,7 +834,7 @@ Our UI will be simple. We will display an alert with the received information.
     })
 ```
 
-> ℹ️ The `ethers` library used under the hood is not perfect here, and we loose our strong typing 😭
+ℹ️ The `ethers` library used under the hood is not perfect here, and we loose our strong typing 😭
 
 Finally, add `library` in the dependency array of `useCallback`. This tells to react to recompute the function if the `library` changes.
 
