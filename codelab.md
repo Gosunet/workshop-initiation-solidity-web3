@@ -102,7 +102,17 @@ Duration: 0:20:00
 
 
 Now that we have set up Hardhat let's create our first smart contract!  
-To do so let's create a new file `MyEpicSmartContract.sol` under `contracts` folder.  
+
+You will write code in Solidity. If you don't know it (and we guess that's why you are here 😜),
+don't panic.  
+
+The language is influenced by C++, Python and JavaScript. 
+
+Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features.
+
+You can find the doc [here](https://docs.soliditylang.org/en/v0.8.17/) if you want to get an overview.
+
+Let's create a new file `MyEpicSmartContract.sol` under `contracts` folder.  
 Be careful file structure is important!
 
 Copy this into your newly created file
@@ -127,6 +137,28 @@ contract MyEpicSmartContract {
 
 Congratulation you have officially written your first smart contract 🥳  
 Easy no?
+
+Let's explain it a bit.  
+
+```javascript
+// SPDX-License-Identifier: UNLICENSED
+// ⬆️  Necessary definition of the licence, per file
+
+pragma solidity ^0.8.17;
+// ⬆️  define the solidity version we use.
+
+import "hardhat/console.sol";
+// ⬆️  Module imports 
+
+// ⬇️  We define our contract with the `contract` keyword. It's kind of `class` equivalent.
+contract MyEpicSmartContract {
+
+    // ⬇️  If you know OOP, you're familiar with that 😝
+    constructor() {
+        console.log("Hello World !");
+    }
+}
+```
 
 The next step is to compile our smart contract, to do so run `yarn hardhat compile`.
 

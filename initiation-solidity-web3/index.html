@@ -90,7 +90,12 @@ yarn hardhat
       </google-codelab-step>
     
       <google-codelab-step label="Write your first smart contract 🆕" duration="20">
-        <p>Now that we have set up Hardhat let&#39;s create our first smart contract!<br> To do so let&#39;s create a new file <code>MyEpicSmartContract.sol</code> under <code>contracts</code> folder.<br> Be careful file structure is important!</p>
+        <p>Now that we have set up Hardhat let&#39;s create our first smart contract!</p>
+<p>You will write code in Solidity. If you don&#39;t know it (and we guess that&#39;s why you are here 😜), don&#39;t panic.</p>
+<p>The language is influenced by C++, Python and JavaScript.</p>
+<p>Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features.</p>
+<p>You can find the doc <a href="https://docs.soliditylang.org/en/v0.8.17/" target="_blank">here</a> if you want to get an overview.</p>
+<p>Let&#39;s create a new file <code>MyEpicSmartContract.sol</code> under <code>contracts</code> folder.<br> Be careful file structure is important!</p>
 <p>Copy this into your newly created file</p>
 <pre><code language="language-javascript" class="language-javascript">// SPDX-License-Identifier: UNLICENSED
 
@@ -106,6 +111,25 @@ contract MyEpicSmartContract {
 </code></pre>
 <p>ℹ️ If you use visual code you can install the <a href="https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity&utm_source=buildspace.so&utm_medium=buildspace_project" target="_blank">solidity extension</a> for syntax highlighting.</p>
 <p>Congratulation you have officially written your first smart contract 🥳<br> Easy no?</p>
+<p>Let&#39;s explain it a bit.</p>
+<pre><code language="language-javascript" class="language-javascript">// SPDX-License-Identifier: UNLICENSED
+// ⬆️  Necessary definition of the licence, per file
+
+pragma solidity ^0.8.17;
+// ⬆️  define the solidity version we use.
+
+import &#34;hardhat/console.sol&#34;;
+// ⬆️  Module imports 
+
+// ⬇️  We define our contract with the `contract` keyword. It&#39;s kind of `class` equivalent.
+contract MyEpicSmartContract {
+
+    // ⬇️  If you know OOP, you&#39;re familiar with that 😝
+    constructor() {
+        console.log(&#34;Hello World !&#34;);
+    }
+}
+</code></pre>
 <p>The next step is to compile our smart contract, to do so run <code>yarn hardhat compile</code>.</p>
 <p>Now it&#39;s our turn to work!</p>
 <p>Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. Then another function <code>sayHello</code> will simply use the name you just set and print <code>Hello ${name}</code> in the console.<br> Here is a link to the <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">solidity doc</a> to help you with that.</p>
