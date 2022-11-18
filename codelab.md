@@ -357,11 +357,9 @@ function makeAnEpicNFT(string memory srcTokenUri) public {
 
     // Get all the JSON metadata in place and base64 encode it.
     string memory json = Base64.encode(
-        bytes(
-            string(
-                abi.encodePacked(
-                    '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
-                )
+        string(
+            abi.encodePacked(
+                '{"name": "Crypto Duck", "description": "A magnificent crypto duck.", "image": "', srcTokenUri, '"}'
             )
         )
     );
