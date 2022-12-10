@@ -63,12 +63,17 @@
 <li>deploy our smart contract</li>
 </ul>
 <p>If you feel adventurous you can alternatively use <a href="https://trufflesuite.com/docs/" target="_blank">Truffle</a> or <a href="https://github.com/foundry-rs/foundry" target="_blank">Fundry</a>. Both are pretty similar to Hardhat in terms of features.</p>
-<p>Because installing hardhat in a monorepo is a little bit tricky, we installed all the needed dependencies for you.</p>
+<p>Because installing hardhat in a monorepo is a little bit tricky, we setup dependencies for you.</p>
 <p>You can still take a look at the dependencies listed in <code>packages/hardhat/package.json</code>.</p>
 <p>Now is the time to init hardhat in your <code>packages/hardhat</code> folder</p>
 <pre><code language="language-sh" class="language-sh">cd packages/hardhat
+yarn install
 yarn hardhat
 </code></pre>
+<p>🛠 If you don&#39;t have yarn installed you can install it globally like that</p>
+<pre><code language="language-sh" class="language-sh">npm install --global yarn
+</code></pre>
+<p>Choose to create a new Javascript project, then accept the following step.</p>
 <p>This will create folders :</p>
 <ul>
 <li><code>contracts</code> : folder for our solidity files,</li>
@@ -132,7 +137,31 @@ contract MyEpicSmartContract {
 </code></pre>
 <p>The next step is to compile our smart contract, to do so run <code>yarn hardhat compile</code>.</p>
 <p>Now it&#39;s our turn to work!</p>
-<p>Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. Then another function <code>sayHello</code> will simply use the name you just set and print <code>Hello ${name}</code> in the console.<br> Here is a link to the <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">solidity doc</a> to help you with that.</p>
+<p>Let&#39;s create a small function to set an attribute <code>name</code> into our smart contract. First, you will need to create a name attribute in your smart contract</p>
+<pre><code language="language-javascript" class="language-javascript">contract MyEpicSmartContract {
+
+    string name;
+    
+    ...
+</code></pre>
+<p>Then you can create your fonction</p>
+<pre><code language="language-javscript" class="language-javscript">function setName(string newName) {
+  name = x;
+}
+</code></pre>
+<p>Try to compile now!<br> 💥 You should get an error like that : <code>SyntaxError: No visibility specified. Did you intend to add "public"?</code></p>
+<p>In solidity, like in some other language, you need to set the visibility of your function.<br> Here we want this method to be callable from outside our contract so we need to add the <code>public</code> keyword like that</p>
+<pre><code language="language-javascript" class="language-javascript">function setName(string x) public {
+        name = x;
+}
+</code></pre>
+<p><a href="https://solidity-by-example.org/visibility/" target="_blank">Here</a> is the visibility doc for Solidity if you are curious about other visibilities.</p>
+<p>Head back to your terminal, you should also see this error <code>TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.</code></p>
+<p>The solidity compiler tells you here that you need to specify the <a href="https://solidity-by-example.org/data-locations/" target="_blank">storage location</a> of your input name. You should use <code>calldata</code>, it&#39;s a special data location that contains function arguments, and the advantage is that it cost nothing. <code>memory</code> could work too but <code>calldata</code> is designed for input parameters so let&#39;s use this.</p>
+<p>Then another function <code>sayHello</code> will simply use the name you just set to do a console log like that <code>console.log("Hello World !");</code></p>
+<p>This should be good for the <code>setName</code> method, go ahead and create the <code>sayHello</code> method now.</p>
+<p>Again, here is a <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">link</a> to help you with that.</p>
+<p>Let&#39;s see how to run it!</p>
 <h2 is-upgraded>A script to run our contract</h2>
 <p>Hardhat allows us to deploy our smart contract in a local blockchain, and it allows us to do it very easily.</p>
 <p>We just have to write a small script to do that, so let&#39;s go!</p>
@@ -187,7 +216,7 @@ contract MyEpicSmartContract is ERC721URIStorage {
 <p>You will see that here we need to call the <code>ERC721</code> contract constructor with two strings, one for the name of our NFT token, and the other one for the symbol of our collection.</p>
 <p>Feel free to name it as you want 😉</p>
 <p>Now we can use the <code>ERC721</code> contract method!<br> Let&#39;s create the method that we will call to create our NFT that will represent our custom duck.<br> We don&#39;t want to store the whole duck SVG in our contract because storage in the blockchain costs money 💰 so we will only store the URL to access our duck SVG.</p>
-<p>ℹ️ Remember that data in the blockchain are immutable, this is why it&#39;s important that our url will be accessible FOREVER ! That&#39;s why it&#39;s strongly recommended to stare our image in a decentralized store file systeme like IPFS.</p>
+<p>ℹ️ Remember that data in the blockchain are immutable, this is why our URL must be accessible FOREVER! That&#39;s why it&#39;s strongly recommended to store our image in a decentralized store file system like IPFS.</p>
 <pre><code language="language-javascript" class="language-javascript">function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
@@ -224,7 +253,7 @@ string memory finalTokenUri = string(
 <p>To be able to use the <code>Base64.encode</code> we need to add the Base64 library to our project.<br> Create a <code>libraries</code> package under <code>contracts</code> and create a file <code>Base64.sol</code> in it. You can find the content of this file <a href="https://github.com/BlockChainCaffe/Base64.sol/blob/main/contracts/base64.sol" target="_blank">here</a>.<br> After that import the library into our contract file.</p>
 <pre><code language="language-javascript" class="language-javascript">import { Base64 } from &#34;./libraries/Base64.sol&#34;;
 </code></pre>
-<p>Finally, we need to set the date to the NFT</p>
+<p>Finally, we need to set the data to the NFT</p>
 <pre><code language="language-javascript" class="language-javascript">// Set the NFTs data.
 _setTokenURI(newItemId, finalTokenUri);
 
@@ -251,11 +280,9 @@ _tokenIds.increment();
 
     // Get all the JSON metadata in place and base64 encode it.
     string memory json = Base64.encode(
-        bytes(
-            string(
-                abi.encodePacked(
-                    &#39;{&#34;name&#34;: &#34;Crypto Duck&#34;, &#34;description&#34;: &#34;A magnificent crypto duck.&#34;, &#34;image&#34;: &#34;&#39;, srcTokenUri, &#39;&#34;}&#39;
-                )
+        string(
+            abi.encodePacked(
+                &#39;{&#34;name&#34;: &#34;Crypto Duck&#34;, &#34;description&#34;: &#34;A magnificent crypto duck.&#34;, &#34;image&#34;: &#34;&#39;, srcTokenUri, &#39;&#34;}&#39;
             )
         )
     );
