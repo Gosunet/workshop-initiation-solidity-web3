@@ -192,7 +192,7 @@ Hello Fellow Codeur (en seine)
       <google-codelab-step label="Create a contract that mints NFTs 🦆" duration="20">
         <p>It&#39;s all fun and stuff but our contract is not doing anything useful for our use case.</p>
 <p>Let&#39;s change that! What we want is a contract that enables us to <code>mint</code> an NFT. Mint just means to create our NFT in the blockchain.</p>
-<p>But what&#39;s an NFT? On the EVM-compatible blockchain, an NFT is &#34;just&#34; an [ERC-721 <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">token</a>, which means that our smart contract should implement the ERC-721 interface!</p>
+<p>But what&#39;s an NFT? On the EVM-compatible blockchain, an NFT is &#34;just&#34; a ERC-721 <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">token</a>, which means that our smart contract should implement the ERC-721 interface!</p>
 <p>That&#39;s a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! <a href="https://github.com/OpenZeppelin" target="_blank">OpenZeppelin</a> is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).</p>
 <p>We first need to add the OpenZeppelin dependency. In the <code>harhdat</code> folder run:</p>
 <pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts

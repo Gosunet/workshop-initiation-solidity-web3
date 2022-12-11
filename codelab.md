@@ -259,7 +259,7 @@ It's all fun and stuff but our contract is not doing anything useful for our use
 
 Let's change that! What we want is a contract that enables us to `mint` an NFT. Mint just means to create our NFT in the blockchain.
 
-But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" an [ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
+But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" a ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
 
 That's a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).
 
