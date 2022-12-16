@@ -694,7 +694,7 @@ Great! Now we are able to discuss with the wallet in our React components!
 
 ### Connect to a wallet
 
-The next code to update will be the `Web3WalletConnector`.
+The next code to update will be the **`Web3WalletConnector` component**.
 This component will configure and handle all the connection logic. In that, we will find: 
 
 - The chain configuration,
@@ -771,7 +771,7 @@ If you accept, you should then see your address instead of the login button.
 
 Awesome!
 
-If you wonder what's under the button, you can look for `Web3WalletButton`.  
+If you wonder what's under the button, you can look for **`Web3WalletButton` component**.  
 It calls the hook `useWeb3React`, and gets the connected address, and the active props.
 
 From the `active` props, we decide what we display: a truncated address or a connection button.
@@ -780,7 +780,7 @@ The parent component `Web3WalletConnector` displayed an additional logout button
 
 We still have to complete the disconnected behavior. 
 
-From the `useWeb3React`, get another property: `disconnect`. It is a function. Call it from the 
+From the `useWeb3React`, get another property: `desactivate`. It is a function. Call it from the 
 disconnect function, and we are good! Good Job! 🙌
 
 ## Integrate and interact with your smart contract
@@ -889,7 +889,7 @@ We should have this:
 
 ```tsx
     const signer = library.getSigner()
-    const contract = new Contract(
+    const connectedContract = new Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
       signer
@@ -906,7 +906,7 @@ of the method called (here the token id is a big number).
 Our UI will be simple. We will display an alert with the received information.
 
 ```tsx
-    contract.on('NewNFTMinted', (from, tokenId) => {
+    connectedContract.on('NewNFTMinted', (from, tokenId) => {
       console.log(from, tokenId.toNumber())
       alert(
         `Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
