@@ -20,10 +20,9 @@ import AssetButton from './components/AssetButton'
 import UpdateApp from './components/UpdateApp'
 import useAssets from './useAssets'
 import styles from './App.module.css'
-import { Web3ReactProvider } from '@web3-react/core'
 import Web3WalletConnector from './components/Web3WalletConnector'
-import { Web3Provider } from "@ethersproject/providers";
 import { MintButton } from './components/MintButton'
+import Loader from './components/Loader'
 
 function App() {
   const svgElement = useRef<SVGSVGElement>(null)
@@ -43,111 +42,110 @@ function App() {
   }
 
   return (
-    <Web3ReactProvider getLibrary={(provider) => new Web3Provider(provider)}>
-      <div className={styles.app}>
-        <div className={styles.background}></div>
-        <div className={styles.header}>
-          <Web3WalletConnector />
-          <div className={styles.title}>
-            Pimp My <span className={styles.titleInner}>Duck</span>
-            <ByZenika className={styles.byZenika} />
+    <div className={styles.app}>
+      <div className={styles.background}></div>
+      <div className={styles.header}>
+        <Web3WalletConnector />
+        <div className={styles.title}>
+          Pimp My <span className={styles.titleInner}>Duck</span>
+          <ByZenika className={styles.byZenika} />
+        </div>
+      </div>
+      <main className={styles.main}>
+        {isLoading ? <Loader /> : null}
+        <div className={styles.canvas}>
+          <svg
+            ref={svgElement}
+            width="2000"
+            height="2000"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 2000 2000"
+          >
+            {layers.map((layer: Layer) => {
+              let Asset
+              if (!layer.name) {
+                Asset = getAsset(layer.id)
+              } else {
+                Asset = getAsset(selectedAssets[layer.id])
+              }
+              return (
+                Asset && (
+                  <Suspense key={layer.id} fallback={null}>
+                    <Asset />
+                  </Suspense>
+                )
+              )
+            })}
+          </svg>
+        </div>
+        <div className={cn(styles.categories, styles.categoriesLeft)}>
+          <div className={styles.categoriesInner}>
+            {getCategoryLayers().map((layer) => {
+              if (!selectedLayer) return undefined
+              return (
+                <button
+                  key={layer.id}
+                  onClick={() => setSelectedLayer(layer)}
+                  className={cn(styles.categoryButton, {
+                    [styles.selected]: layer.id === selectedLayer.id,
+                  })}
+                >
+                  {layer.name}
+                </button>
+              )
+            })}
           </div>
         </div>
-        <main className={styles.main}>
-          { isLoading ? <Loader /> : null }
-          <div className={styles.canvas}>
-            <svg
-              ref={svgElement}
-              width="2000"
-              height="2000"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 2000 2000"
-            >
-              {layers.map((layer: Layer) => {
-                let Asset
-                if (!layer.name) {
-                  Asset = getAsset(layer.id)
-                } else {
-                  Asset = getAsset(selectedAssets[layer.id])
-                }
-                return (
-                  Asset && (
-                    <Suspense key={layer.id} fallback={null}>
-                      <Asset />
-                    </Suspense>
-                  )
-                )
-              })}
-            </svg>
-          </div>
-          <div className={cn(styles.categories, styles.categoriesLeft)}>
-            <div className={styles.categoriesInner}>
-              {getCategoryLayers().map((layer) => {
-                if (!selectedLayer) return undefined
-                return (
-                  <button
-                    key={layer.id}
-                    onClick={() => setSelectedLayer(layer)}
-                    className={cn(styles.categoryButton, {
-                      [styles.selected]: layer.id === selectedLayer.id,
-                    })}
-                  >
-                    {layer.name}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-          <div className={cn(styles.categories, styles.categoriesRight)}>
-            <div className={styles.categoriesInner}>
+        <div className={cn(styles.categories, styles.categoriesRight)}>
+          <div className={styles.categoriesInner}>
+            <AssetButton
+              onClick={addAsset}
+              layer={selectedLayer}
+              selected={isAssetsSelected(undefined)}
+            />
+            {getLayerAssets(selectedLayer?.id).map((assetName, index) => (
               <AssetButton
+                key={index}
+                assetName={assetName}
                 onClick={addAsset}
                 layer={selectedLayer}
-                selected={isAssetsSelected(undefined)}
+                selected={isAssetsSelected(assetName)}
               />
-              {getLayerAssets(selectedLayer?.id).map((assetName, index) => (
-                <AssetButton
-                  key={index}
-                  assetName={assetName}
-                  onClick={addAsset}
-                  layer={selectedLayer}
-                  selected={isAssetsSelected(assetName)}
-                />
-              ))}
-            </div>
+            ))}
           </div>
-          <div className={styles.actions}>
-            <button
-              className={styles.circle}
-              onClick={reset}
-              title="Reset"
-              aria-label="Reset">
-              <Trash height="24px" width="24px" />
-            </button>
-            <button
-              className={styles.circle}
-              onClick={randomize}
-              title="Random"
-              aria-label="Random"
-            >
-              <Random height="24px" width="24px" />
-            </button>
-            <button
-              className={styles.circle}
-              onClick={download}
-              title="Download"
-              aria-label="Download"
-            >
-              <Download height="24px" width="24px" />
-            </button>
-            <MintButton svgRef={svgElement} setIsLoading={setIsLoading} />
-          </div>
-          <UpdateApp />
-        </main>
-        <a href="https://www.netlify.com/" className={styles.netlify}>
-          <Netlify />
-        </a></div>
-    </Web3ReactProvider>
+        </div>
+        <div className={styles.actions}>
+          <button
+            className={styles.circle}
+            onClick={reset}
+            title="Reset"
+            aria-label="Reset">
+            <Trash height="24px" width="24px" />
+          </button>
+          <button
+            className={styles.circle}
+            onClick={randomize}
+            title="Random"
+            aria-label="Random"
+          >
+            <Random height="24px" width="24px" />
+          </button>
+          <button
+            className={styles.circle}
+            onClick={download}
+            title="Download"
+            aria-label="Download"
+          >
+            <Download height="24px" width="24px" />
+          </button>
+          <MintButton svgRef={svgElement} setIsLoading={setIsLoading} />
+        </div>
+        <UpdateApp />
+      </main>
+      <a href="https://www.netlify.com/" className={styles.netlify}>
+        <Netlify />
+      </a>
+    </div>
   )
 }
 

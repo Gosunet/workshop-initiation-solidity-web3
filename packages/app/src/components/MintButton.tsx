@@ -14,7 +14,7 @@ type MintProps = {
   setIsLoading: (loading: boolean) => void
 }
 
-export const Mint: FC<MintProps> = ({ svgRef, setIsLoading }) => {
+export const MintButton: FC<MintProps> = ({ svgRef, setIsLoading }) => {
   const active = false
   const setupEventListener = useCallback(() => {
   }, [])
@@ -64,4 +64,4 @@ async function getSvgImageFromSvgElement(svg: SVGSVGElement) {
   })
 }
 
-export default Mint
+export default MintButton
