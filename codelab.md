@@ -21,7 +21,7 @@ We've made this project to have a better understanding of the NFT trend, and als
 
 Now you will too 😜
 
-During this workshop you will:
+During this workshop, you will:
 
 - create your first Solidity smart contract
 - test our contract
@@ -62,7 +62,7 @@ Now we've seen that, let's start building! 🚀
 
 If you feel adventurous you can alternatively use [Truffle](https://trufflesuite.com/docs/) or [Fundry](https://github.com/foundry-rs/foundry). Both are pretty similar to Hardhat in terms of features.
 
-Because installing hardhat in a monorepo is a little bit tricky, we setup dependencies for you.
+Because installing hardhat in a monorepo is a little bit tricky, we set up dependencies for you.
 
 You can still take a look at the dependencies listed in `packages/hardhat/package.json`.
 
@@ -232,7 +232,7 @@ await contract.deployed();
 console.log("Contract deployed to:", contract.address);
 
 // Call the function.
-let txn = await contract.setName("Fellow Codeur (en seine)")
+let txn = await contract.setName("Sunny Tech")
 // Wait for it to be finished.
 await txn.wait()
 // Call another function
@@ -246,7 +246,7 @@ You should get something like that!
 ```bash
 Hello World !
 Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-Hello Fellow Codeur (en seine)
+Hello Sunny Tech !
 ```
 
 `0x5FbDB2315678afecb367f032d93F642f64180aa3` here is the contract address in our local blockchain where the contract was deployed.
@@ -336,7 +336,7 @@ _safeMint(msg.sender, newItemId);
 
 Notice `msg.sender` here, it's a magic solidity variable that holds the address of the wallet that calls this method.
 
-We want our NFT to have an image, to do that we will create a `payload` that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like [OpenSea](https://opensea.io/). We also want our payload to be as tiny as possible, that's why we will encode it in base64.
+We want our NFT to have an image, to do that we will create a `payload` that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like [OpenSea](https://opensea.io/) or the metamask wallet. We also want our payload to be as tiny as possible, that's why we will encode it in base64.
 
 ```javascript
 // Get all the JSON metadata in place and base64 encode it.
@@ -515,18 +515,18 @@ Now that we have a working smart contract we want to deploy it on a real blockch
 
 ### Get a Wallet! And some ETH 💰
 
-To deploy our smart contract we will need some Ethereum. Don't worry we will use the Goerli testnet of Ethereum so this will not cost us a penny!
+To deploy our smart contract we will need some Ethereum. Don't worry we will use the Sepolia testnet of Ethereum so this will not cost us a penny!
 
-So if you don't already have a wallet, download the [metamask extension](https://metamask.io/download/).
+So if you don't already have a wallet, download the [Metamask extension](https://metamask.io/download/).
 
 You will be guided on the setup phase by Metamask. When this part is done,
-switch to `Goerly network`, you should be on the Ethereum mainnet at first. If you don't see the `Goerly network` click on "Show/hide testnet".
+switch to `Sepolia network`, you should be on the Ethereum mainnet at first. If you don't see the `Sepolia network` click on "Show/hide testnet".
 
-Once it's done you will see that you have 0 GoerliETH 😢
+Once it's done you will see that you have 0 SepoliaETH 😢
 
-So in order to get some GoerliETH you will have to request some in a faucet.
+So in order to get some SepoliaETH you will have to request some in a faucet.
 
-This one should work [https://goerlifaucet.com/](https://goerlifaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our GoerliETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
+This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
 
 If you got some eth let's go to the next part 🔥
 
@@ -554,11 +554,11 @@ console.log("Minted NFT #1")
 Now we have some setup to do.
 
 First, you need to update your `hardhat.config` file.
-We need to add a new network, here Goerly, add this in the `module.export`: 
+We need to add a new network, here Sepolia, add this in the `module.export`: 
 
 ```javscript
 networks: {
-    goerli: {
+    sepolia: {
       url: process.env.STAGING_ALCHEMY_KEY_URL,
       accounts: [process.env.PRIVATE_KEY],
     },
@@ -570,11 +570,11 @@ You can deploy to every EVM-compatible blockchain like that, even a blockchain l
 
 You have surely noticed the `process.env.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
 
-Add the `PRIVATE_KEY` value in a `.env` file, to get the value of our private key, go to metamask, click on the 3 dots next to our account, go to detail then click on "export private key".  
+Add the `PRIVATE_KEY` value in a `.env` file, to get the value of our private key, go to Metamask, click on the 3 dots next to our account, go to detail then click on "export private key".  
 ⚠️⚠️⚠️ You should never share this key with anyone! Otherwise, some bad-intentioned people can still our account, and all that is within it!
 
-To get the `STAGING_ALCHEMY_KEY_URL` you need to log in to [Alchemy](https://dashboard.alchemy.com/) and then create a new 'app' with the create app button. You will be asked to choose a name, a description and a chain, do as you like for the name and description and choose the Ethereum chain with Goerli network, you will get an HTTPS URL, this is our `STAGING_ALCHEMY_KEY_URL` that you need to add in your `.env` file.  
-The alchemy app will act as a node to the Ethereum Goerli network to interact with the blockchain.
+To get the `STAGING_ALCHEMY_KEY_URL` you need to log in to [Alchemy](https://dashboard.alchemy.com/) and then create a new 'app' with the create app button. You will be asked to choose a name, a description and a chain, do as you like for the name and description and choose the Ethereum chain with Sepolia network, you will get an HTTPS URL, this is our `STAGING_ALCHEMY_KEY_URL` that you need to add in your `.env` file.  
+The alchemy app will act as a node to the Ethereum Sepolia network to interact with the blockchain.
 
 
 Now that you set all the variables we need to add the `dotenv` dependency, in the `hardhat` folder run:
@@ -592,7 +592,7 @@ require('dotenv').config();
 Finally, run:
 
 ```bash
-yarn hardhat run scripts/deploy.mjs --network goerli
+yarn hardhat run scripts/deploy.mjs --network sepolia
 ```
 
 You should get something like that:
@@ -604,14 +604,12 @@ Minted NFT #1
 
 Awesome you have deployed your first smart contract in the real world! And mint an NFT.
 
-Now, head to https://testnets.opensea.io/.
-Create this URL: https://testnets.opensea.io/assets/goerli/INSERT_DEPLOY_CONTRACT_ADDRESS_HERE/TOKEN_ID
+Currently, no NFT marketplace supports Sepolia tesnet 😢
 
-Mine is: https://testnets.opensea.io/assets/goerli/0x30382c5d151FFE1837c6BB0a1fdFaBc07FD0b67A/0 (id start at 0!)
+If we were using Goerli we would have been able to go to Opensea to see your NFT!
+Creating an URL like this one: https://testnets.opensea.io/assets/sepolia/INSERT_DEPLOY_CONTRACT_ADDRESS_HERE/TOKEN_ID
 
-And you should see your first duck NFT 🎉
-
-Opensea can take up to 15min to refresh so don't worry if you didn't see your NFT right away.
+But in Sepolia we have to use Metamask, so in Metamask go to the NFT tabs and import a new NFT. Put your contract address and your token id. And that's it! You should see your NFT 🎉
 
 It's EPIC, but kinda boring it's the same SVG. Let's interact with it and create our duck!
 
@@ -654,7 +652,7 @@ Packages under `@web3-react/*` are bridges between react and client libraries su
 (we are using) or `web3` library. It gives us 
 friendly tools to get a reactive state in react components.
 
-Now your probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
+Now you probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
 
 ## Configure your front to connect a Wallet 💰
 Duration: 0:25:00
@@ -663,9 +661,9 @@ Duration: 0:25:00
 
 As we saw, you add some dependencies to interact with the blockchain. 
 This dependency needs to instantiate a `Context` to share the state with the whole app.
-So the first modification we have to make is in the `App.ts` component. 
+So the first modification we have to make is in the `App.ts` component.  
 
-First import the context `Provider` and the web3 library:
+First, import the context `Provider` and the web3 library:
 
 ```tsx
 import { Web3ReactProvider } from '@web3-react/core'
@@ -690,7 +688,7 @@ It is mandatory to initiate the web3 library we want to use. This makes `react-w
 client library.  
 Here, we pass a function to initialize `Web3Provider` from `ethers`, the library commonly used.
 
-Great! Now we are able to discuss with the wallet in our React components!
+Great! Now we can discuss with the wallet in our React components!
 
 ### Connect to a wallet
 
@@ -705,7 +703,7 @@ This component will configure and handle all the connection logic. In that, we w
 Let's see what we have for now. 
 
 You can see some constants already declared: `AVALANCHE_TESTNET_PARAMS` and `ETHEREUM_TESTNET_PARAMS`.
-Those variables are network configuration. We've put them for you, but know you can find them on [chainlist](https://chainlist.org/).
+Those variables are network configurations. We've put them for you, but know you can find them on [Chainlist](https://chainlist.org/).
 
 Then, we have an empty component. For now, it does not contain any logic, but some UI. 
 Here we can start working 💪.
@@ -806,7 +804,7 @@ It contains all the information our frontend needs. 🎉
 
 OK, now we know what we have, let's think about what we want. 
 
-The goal will be to actually mint our NFT, finally!  
+The goal will be to mint our NFT, finally!  
 To achieve that, we want to call our smart contract function `makeAnEpicNFT`, 
 and listen to the event `NewNFTMinted`.  
 From the event, we will get the token id, and display an URL to be able to see it.  
@@ -909,14 +907,14 @@ Our UI will be simple. We will display an alert with the received information.
     connectedContract.on('NewNFTMinted', (from, tokenId) => {
       console.log(from, tokenId.toNumber())
       alert(
-        `Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
+        `Hey there! We've minted your NFT and sent it to your wallet. You can see it in metasmask, just import it ! Contract is ${CONTRACT_ADDRESS} and tokenId is ${tokenId}`
       )
     })
 ```
 
-ℹ️ The `ethers` library used under the hood is not perfect here, and we loose our strong typing 😭
+ℹ️ The `ethers` library used under the hood is not perfect here, and we lose our strong typing 😭
 
-Finally, add `library` in the dependency array of `useCallback`. This tells to react to recompute the function if the `library` changes.
+Finally, add `library` in the dependency array of `useCallback`. This tells react to recompute the function if the `library` changes.
 
 🙌 We have a listener set up! 🙌 But we can't test it without minting an NFT, so let's do that!
 

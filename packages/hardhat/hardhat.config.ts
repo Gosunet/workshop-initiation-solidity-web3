@@ -7,7 +7,7 @@ env.config()
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
   networks: {
-    goerli: {
+    sepolia: {
       url: process.env.STAGING_ALCHEMY_KEY_URL,
       accounts: [process.env.PRIVATE_KEY!],
     },
