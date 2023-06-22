@@ -34,8 +34,19 @@ What we want to do here is to create an NFT based on our custom duck! That will 
 
 Are you ready? Let's go! 🚀
 
+
 ## Init your project 🔨
 Duration: 0:05:00
+
+
+### Prerequisites
+
+🛠 If you don't have yarn installed you can install it globally like that 
+```sh
+npm install --global yarn
+```
+
+### Clone the repo
 
 If you have not done it yet, you can start by cloning this repo
 ```sh
@@ -73,12 +84,7 @@ yarn install
 yarn hardhat
 ```
 
-🛠 If you don't have yarn installed you can install it globally like that 
-```sh
-npm install --global yarn
-```
-
-Choose to create a new Javascript project, then accept the following step.
+Choose to create a new TypeScript project, then accept the following step.
 
 This will create folders :
 
@@ -87,13 +93,18 @@ This will create folders :
 - `test`: unit test sources,
 - `hardhat-config.js` : config file for Hardhat
 
-Finally, run `yarn hardhat node` and this should print out a bunch of accounts.
+Finally, run `yarn hardhat node`.  
+This command run a local Ethereum node on your machine. You have now a BlockChain running! 
+It also print out a bunch of accounts full of ethers that we can use to test our application.
 
 Hardhat will generate some files for you, to make sure everything is working, run:
 
 ```sh
  yarn hardhat compile
 ```
+
+This is interesting, we **compile** our code. This means Ethereum (or more precisely the "Ethereum Virtual Machine") 
+work with a compiled version of our program, also called **byte code**.
 
 Then run:
 
@@ -103,7 +114,7 @@ Then run:
 
 You should see a bunch of tests succeeded 🎉
 
-You can now delete `Lock.js` under test, deploy.js under scripts and `Lock.sol` under contracts. (not the folder!)
+You can now delete `Lock.js` under test, `deploy.js` under scripts and `Lock.sol` under contracts. (not the folder!)
 
 ## Write your first smart contract 🆕
 Duration: 0:20:00
@@ -118,7 +129,7 @@ The language is influenced by C++, Python and JavaScript.
 
 Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features.
 
-You can find the doc [here](https://docs.soliditylang.org/en/v0.8.17/) if you want to get an overview.
+You can find the doc [here](https://docs.soliditylang.org) if you want to get an overview.
 
 Let's create a new file `MyEpicSmartContract.sol` under `contracts` folder.  
 Be careful file structure is important!
@@ -162,6 +173,8 @@ import "hardhat/console.sol";
 contract MyEpicSmartContract {
 
     // ⬇️  If you know OOP, you're familiar with that 😝
+    // If you're not, it's the first function called in our contract, 
+    // when the contract is created = the contract is deployed for the first time.
     constructor() {
         console.log("Hello World !");
     }
@@ -184,9 +197,9 @@ contract MyEpicSmartContract {
 
 Then you can create your fonction 
 
-```javscript
+```javascript
 function setName(string newName) {
-  name = x;
+  name = newName;
 }
 ```
 
@@ -204,14 +217,16 @@ function setName(string x) public {
 
 [Here](https://solidity-by-example.org/visibility/) is the visibility doc for Solidity if you are curious about other visibilities.
 
-Head back to your terminal, you should also see this error `TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.`
+Head back to your terminal. Try to compile again. You should also see this error `TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.`
 
 The solidity compiler tells you here that you need to specify the [storage location](https://solidity-by-example.org/data-locations/) of your input name. You should use `calldata`, it's a special data location that contains function arguments, and the advantage is that it cost nothing. `memory` could work too but `calldata` is designed for input parameters so let's use this.
 
 Then another function `sayHello` will simply use the name you just set to do a console log like that
-```console.log("Hello World !");``` 
+```console.log("Hello <name> !");```  
 
 This should be good for the `setName` method, go ahead and create the `sayHello` method now.
+
+ℹ️ To concatenated strings, you can use `string.concat` method.
 
 Again, here is a [link](https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html) to help you with that.
 
@@ -223,23 +238,30 @@ Hardhat allows us to deploy our smart contract in a local blockchain, and it all
 
 We just have to write a small script to do that, so let's go!
 
-Create a file `run.mjs` under `scripts`.
+Create a file `run.ts` under `scripts`.
 
-```javascript
-const contractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
-const contract = await contractFactory.deploy();
-await contract.deployed();
-console.log("Contract deployed to:", contract.address);
+```typescript
+import { ethers } from "hardhat";
 
-// Call the function.
-let txn = await contract.setName("Sunny Tech")
-// Wait for it to be finished.
-await txn.wait()
-// Call another function
-await contract.sayHello()
+async function main() {
+  const contract = await ethers.deployContract("MyEpicSmartContract");
+  await contract.waitForDeployment();
+
+  console.log(
+    `Contract deployed to : ${await contract.getAddress()}`
+  );
+  const tx = await contract.setName("Sunny Tech");
+  await tx.wait();
+  await contract.sayHello();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 ```
 
-To call your script just run `yarn hardhat run scripts/run.mjs`.
+To call your script just run `yarn hardhat run scripts/run.ts`.
 
 You should get something like that!
 
@@ -272,7 +294,7 @@ yarn add @openzeppelin/contracts
 
 Then import them in our contract like that:
 
-```javascript
+```typescript
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 ```
@@ -305,7 +327,7 @@ We don't want to store the whole duck SVG in our contract because storage in the
 ℹ️ Remember that data in the blockchain are immutable, this is why our URL must be accessible FOREVER! That's why it's strongly recommended to store our image in a decentralized store file system like IPFS.
 
 
-```javascript
+```solidity
 function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
@@ -315,7 +337,7 @@ Each of our NFTs will need a unique ID to do that we will use the `Counters.sol`
 
 Add this to your contract:
 
-```javascript
+```solidity
 using Counters for Counters.Counter;
 Counters.Counter private _tokenIds;
 ```
@@ -324,13 +346,13 @@ Let's code our contract to mint an NFT now!
 
 First, we want to get the current ID for your new NFT.
 
-```javascript
+```solidity
 uint256 newItemId = _tokenIds.current();
 ````
 
 Then we will mint our NFT calling the method from the OpenZeppelin contract (all internal methods are prefixed with an underscore)
 
-```javascript
+```solidity
 _safeMint(msg.sender, newItemId);
 ```
 
@@ -437,7 +459,7 @@ That's cool and stuff but how can I test my code? Let's see that in the next cha
 ## Test it!
 Duration: 0:20:00
 
-To test our smart contract we can update the `run.mjs` script to create our contract then call our new method `makeAnEpicNft`.
+To test our smart contract we can update the `run.ts` script to create our contract then call our new method `makeAnEpicNft`.
 
 ```javascript
 const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
@@ -466,23 +488,23 @@ That's nice but I think we can have better a test, can we unit-test our contract
 
 Let's create a `MySmartContractSolTest.js` file under the package `test`
 
-We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.mjs` with some tests at the end.  
+We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.ts` with some tests at the end.  
 
 Here is the code:
 
 ```javascript
-const { expect } = require('chai')
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe('MyEpicSmartContract contract', function () {
   it('Should emit NewNFTMinted', async function () {
     const [owner] = await ethers.getSigners()
 
-    const nftContractFactory = await hre.ethers.getContractFactory(
+    const nftContract = await ethers.deployContract(
       'MyEpicSmartContract',
     )
-    const nftContract = await nftContractFactory.deploy()
-    await nftContract.deployed()
-    console.log('Contract deployed to:', nftContract.address)
+    await nftContract.waitForDeployment()
+    console.log('Contract deployed to:', await nftContract.getAddress())
 
     const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
 
@@ -526,29 +548,35 @@ Once it's done you will see that you have 0 SepoliaETH 😢
 
 So in order to get some SepoliaETH you will have to request some in a faucet.
 
-This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
+This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your ETH just copy and paste in the input our public key address from Metamask (the one that looks like 0xf20...4D8 when you open it).
 
-If you got some eth let's go to the next part 🔥
+If you got some ETH let's go to the next part 🔥
 
 ### Deploy
 
-Deploying our contract is pretty much like running it with the `run.mjs` script thanks to Hardhat. 
+Deploying our contract is pretty much like running it with the `run.ts` script thanks to Hardhat. 
 
-So let's create a new script `deploy.mjs`:
+So let's create a new script `deploy.ts`:
 
-```javascript
-const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
-const nftContract = await nftContractFactory.deploy();
-await nftContract.deployed();
-console.log("Contract deployed to:", nftContract.address);
+```typescript
+import { ethers } from "hardhat";
 
-const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
+async function main() {
+  const contract = await ethers.deployContract("MyEpicSmartContract");
+  await contract.waitForDeployment();
 
-// Call the function.
-let txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
-console.log("Minted NFT #1")
+  console.log(`Contract deployed to : ${await contract.getAddress()}`);
+
+  const svg = "https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png";
+  const tx = await contract.makeAnEpicNFT(svg);
+  await tx.wait();
+  console.log("Minted NFT #1");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 ```
 
 Now we have some setup to do.
@@ -565,7 +593,7 @@ networks: {
   },
 ```
 
-Each time you want to deploy to a specific network you will need to add it like that in our Hardhat config. Pretty easy no?  
+Each time you want to deploy to a specific network you will need to add it like that in our Hardhat configuration. Pretty easy no?  
 You can deploy to every EVM-compatible blockchain like that, even a blockchain like Avalanche 😉
 
 You have surely noticed the `process.env.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
@@ -585,14 +613,14 @@ yarn add -D dotenv
 
 Then add the import on top of your Hardhat config file:
 
-```javascript
+```typescript
 require('dotenv').config();
 ```
 
 Finally, run:
 
 ```bash
-yarn hardhat run scripts/deploy.mjs --network sepolia
+yarn hardhat run scripts/deploy.ts --network sepolia
 ```
 
 You should get something like that:

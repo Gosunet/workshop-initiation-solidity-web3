@@ -47,7 +47,12 @@
       </google-codelab-step>
     
       <google-codelab-step label="Init your project 🔨" duration="5">
-        <p>If you have not done it yet, you can start by cloning this repo</p>
+        <h2 is-upgraded>Prerequisites</h2>
+<p>🛠 If you don&#39;t have yarn installed you can install it globally like that</p>
+<pre><code language="language-sh" class="language-sh">npm install --global yarn
+</code></pre>
+<h2 is-upgraded>Clone the repo</h2>
+<p>If you have not done it yet, you can start by cloning this repo</p>
 <pre><code language="language-sh" class="language-sh">git clone https://github.com/Gosunet/workshop-initiation-solidity-web3.git
 </code></pre>
 <p>If we take a look at the structure, we can notice it&#39;s a monorepo using yarn workspaces.</p>
@@ -70,10 +75,7 @@
 yarn install
 yarn hardhat
 </code></pre>
-<p>🛠 If you don&#39;t have yarn installed you can install it globally like that</p>
-<pre><code language="language-sh" class="language-sh">npm install --global yarn
-</code></pre>
-<p>Choose to create a new Javascript project, then accept the following step.</p>
+<p>Choose to create a new TypeScript project, then accept the following step.</p>
 <p>This will create folders :</p>
 <ul>
 <li><code>contracts</code> : folder for our solidity files,</li>
@@ -81,15 +83,16 @@ yarn hardhat
 <li><code>test</code>: unit test sources,</li>
 <li><code>hardhat-config.js</code> : config file for Hardhat</li>
 </ul>
-<p>Finally, run <code>yarn hardhat node</code> and this should print out a bunch of accounts.</p>
+<p>Finally, run <code>yarn hardhat node</code>.<br> This command run a local Ethereum node on your machine. You have now a BlockChain running! It also print out a bunch of accounts full of ethers that we can use to test our application.</p>
 <p>Hardhat will generate some files for you, to make sure everything is working, run:</p>
 <pre><code language="language-sh" class="language-sh"> yarn hardhat compile
 </code></pre>
+<p>This is interesting, we <strong>compile</strong> our code. This means Ethereum (or more precisely the &#34;Ethereum Virtual Machine&#34;) work with a compiled version of our program, also called <strong>byte code</strong>.</p>
 <p>Then run:</p>
 <pre><code language="language-sh" class="language-sh"> yarn hardhat test
 </code></pre>
 <p>You should see a bunch of tests succeeded 🎉</p>
-<p>You can now delete <code>Lock.js</code> under test, deploy.js under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
+<p>You can now delete <code>Lock.js</code> under test, <code>deploy.js</code> under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
 
 
       </google-codelab-step>
@@ -99,7 +102,7 @@ yarn hardhat
 <p>You will write code in Solidity. If you don&#39;t know it (and we guess that&#39;s why you are here 😜), don&#39;t panic.</p>
 <p>The language is influenced by C++, Python and JavaScript.</p>
 <p>Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features.</p>
-<p>You can find the doc <a href="https://docs.soliditylang.org/en/v0.8.17/" target="_blank">here</a> if you want to get an overview.</p>
+<p>You can find the doc <a href="https://docs.soliditylang.org" target="_blank">here</a> if you want to get an overview.</p>
 <p>Let&#39;s create a new file <code>MyEpicSmartContract.sol</code> under <code>contracts</code> folder.<br> Be careful file structure is important!</p>
 <p>Copy this into your newly created file</p>
 <pre><code language="language-javascript" class="language-javascript">// SPDX-License-Identifier: UNLICENSED
@@ -130,6 +133,8 @@ import &#34;hardhat/console.sol&#34;;
 contract MyEpicSmartContract {
 
     // ⬇️  If you know OOP, you&#39;re familiar with that 😝
+    // If you&#39;re not, it&#39;s the first function called in our contract, 
+    // when the contract is created = the contract is deployed for the first time.
     constructor() {
         console.log(&#34;Hello World !&#34;);
     }
@@ -145,8 +150,8 @@ contract MyEpicSmartContract {
     ...
 </code></pre>
 <p>Then you can create your fonction</p>
-<pre><code language="language-javscript" class="language-javscript">function setName(string newName) {
-  name = x;
+<pre><code language="language-javascript" class="language-javascript">function setName(string newName) {
+  name = newName;
 }
 </code></pre>
 <p>Try to compile now!<br> 💥 You should get an error like that : <code>SyntaxError: No visibility specified. Did you intend to add "public"?</code></p>
@@ -156,29 +161,37 @@ contract MyEpicSmartContract {
 }
 </code></pre>
 <p><a href="https://solidity-by-example.org/visibility/" target="_blank">Here</a> is the visibility doc for Solidity if you are curious about other visibilities.</p>
-<p>Head back to your terminal, you should also see this error <code>TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.</code></p>
+<p>Head back to your terminal. Try to compile again. You should also see this error <code>TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.</code></p>
 <p>The solidity compiler tells you here that you need to specify the <a href="https://solidity-by-example.org/data-locations/" target="_blank">storage location</a> of your input name. You should use <code>calldata</code>, it&#39;s a special data location that contains function arguments, and the advantage is that it cost nothing. <code>memory</code> could work too but <code>calldata</code> is designed for input parameters so let&#39;s use this.</p>
-<p>Then another function <code>sayHello</code> will simply use the name you just set to do a console log like that <code>console.log("Hello World !");</code></p>
+<p>Then another function <code>sayHello</code> will simply use the name you just set to do a console log like that <code>console.log("Hello <name> !");</code></p>
 <p>This should be good for the <code>setName</code> method, go ahead and create the <code>sayHello</code> method now.</p>
+<p>ℹ️ To concatenated strings, you can use <code>string.concat</code> method.</p>
 <p>Again, here is a <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">link</a> to help you with that.</p>
 <p>Let&#39;s see how to run it!</p>
 <h2 is-upgraded>A script to run our contract</h2>
 <p>Hardhat allows us to deploy our smart contract in a local blockchain, and it allows us to do it very easily.</p>
 <p>We just have to write a small script to do that, so let&#39;s go!</p>
-<p>Create a file <code>run.mjs</code> under <code>scripts</code>.</p>
-<pre><code language="language-javascript" class="language-javascript">const contractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
-const contract = await contractFactory.deploy();
-await contract.deployed();
-console.log(&#34;Contract deployed to:&#34;, contract.address);
+<p>Create a file <code>run.ts</code> under <code>scripts</code>.</p>
+<pre><code language="language-typescript" class="language-typescript">import { ethers } from &#34;hardhat&#34;;
 
-// Call the function.
-let txn = await contract.setName(&#34;Sunny Tech&#34;)
-// Wait for it to be finished.
-await txn.wait()
-// Call another function
-await contract.sayHello()
+async function main() {
+  const contract = await ethers.deployContract(&#34;MyEpicSmartContract&#34;);
+  await contract.waitForDeployment();
+
+  console.log(
+    `Contract deployed to : ${await contract.getAddress()}`
+  );
+  const tx = await contract.setName(&#34;Sunny Tech&#34;);
+  await tx.wait();
+  await contract.sayHello();
+}
+
+main().catch((error) =&gt; {
+  console.error(error);
+  process.exitCode = 1;
+});
 </code></pre>
-<p>To call your script just run <code>yarn hardhat run scripts/run.mjs</code>.</p>
+<p>To call your script just run <code>yarn hardhat run scripts/run.ts</code>.</p>
 <p>You should get something like that!</p>
 <pre><code language="language-bash" class="language-bash">Hello World !
 Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
@@ -198,7 +211,7 @@ Hello Sunny Tech !
 <pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts
 </code></pre>
 <p>Then import them in our contract like that:</p>
-<pre><code language="language-javascript" class="language-javascript">import &#34;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&#34;;
+<pre><code language="language-typescript" class="language-typescript">import &#34;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&#34;;
 import &#34;@openzeppelin/contracts/utils/Counters.sol&#34;;
 </code></pre>
 <p>As you can see we also import <code>Counters.sol</code>, this will help us to generate our NFT id.</p>
@@ -217,21 +230,21 @@ contract MyEpicSmartContract is ERC721URIStorage {
 <p>Feel free to name it as you want 😉</p>
 <p>Now we can use the <code>ERC721</code> contract method!<br> Let&#39;s create the method that we will call to create our NFT that will represent our custom duck.<br> We don&#39;t want to store the whole duck SVG in our contract because storage in the blockchain costs money 💰 so we will only store the URL to access our duck SVG.</p>
 <p>ℹ️ Remember that data in the blockchain are immutable, this is why our URL must be accessible FOREVER! That&#39;s why it&#39;s strongly recommended to store our image in a decentralized store file system like IPFS.</p>
-<pre><code language="language-javascript" class="language-javascript">function makeAnEpicNFT(string memory srcTokenUri) public { 
+<pre><code language="language-solidity" class="language-solidity">function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
 </code></pre>
 <p>Each of our NFTs will need a unique ID to do that we will use the <code>Counters.sol</code> we have imported.</p>
 <p>Add this to your contract:</p>
-<pre><code language="language-javascript" class="language-javascript">using Counters for Counters.Counter;
+<pre><code language="language-solidity" class="language-solidity">using Counters for Counters.Counter;
 Counters.Counter private _tokenIds;
 </code></pre>
 <p>Let&#39;s code our contract to mint an NFT now!</p>
 <p>First, we want to get the current ID for your new NFT.</p>
-<pre><code language="language-javascript" class="language-javascript">uint256 newItemId = _tokenIds.current();
+<pre><code language="language-solidity" class="language-solidity">uint256 newItemId = _tokenIds.current();
 </code></pre>
 <p>Then we will mint our NFT calling the method from the OpenZeppelin contract (all internal methods are prefixed with an underscore)</p>
-<pre><code language="language-javascript" class="language-javascript">_safeMint(msg.sender, newItemId);
+<pre><code language="language-solidity" class="language-solidity">_safeMint(msg.sender, newItemId);
 </code></pre>
 <p>Notice <code>msg.sender</code> here, it&#39;s a magic solidity variable that holds the address of the wallet that calls this method.</p>
 <p>We want our NFT to have an image, to do that we will create a <code>payload</code> that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like <a href="https://opensea.io/" target="_blank">OpenSea</a> or the metamask wallet. We also want our payload to be as tiny as possible, that&#39;s why we will encode it in base64.</p>
@@ -309,7 +322,7 @@ _tokenIds.increment();
       </google-codelab-step>
     
       <google-codelab-step label="Test it!" duration="20">
-        <p>To test our smart contract we can update the <code>run.mjs</code> script to create our contract then call our new method <code>makeAnEpicNft</code>.</p>
+        <p>To test our smart contract we can update the <code>run.ts</code> script to create our contract then call our new method <code>makeAnEpicNft</code>.</p>
 <pre><code language="language-javascript" class="language-javascript">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
 const nftContract = await nftContractFactory.deploy();
 await nftContract.deployed();
@@ -331,20 +344,20 @@ await txn.wait()
 <p>Is it working? 🎉</p>
 <p>That&#39;s nice but I think we can have better a test, can we unit-test our contract? YES, we can!</p>
 <p>Let&#39;s create a <code>MySmartContractSolTest.js</code> file under the package <code>test</code></p>
-<p>We can test that we emit our <code>NewNFTMinted</code> event. It&#39;s pretty much the same code that the <code>run.mjs</code> with some tests at the end.</p>
+<p>We can test that we emit our <code>NewNFTMinted</code> event. It&#39;s pretty much the same code that the <code>run.ts</code> with some tests at the end.</p>
 <p>Here is the code:</p>
-<pre><code language="language-javascript" class="language-javascript">const { expect } = require(&#39;chai&#39;)
+<pre><code language="language-javascript" class="language-javascript">import { expect } from &#34;chai&#34;;
+import { ethers } from &#34;hardhat&#34;;
 
 describe(&#39;MyEpicSmartContract contract&#39;, function () {
   it(&#39;Should emit NewNFTMinted&#39;, async function () {
     const [owner] = await ethers.getSigners()
 
-    const nftContractFactory = await hre.ethers.getContractFactory(
+    const nftContract = await ethers.deployContract(
       &#39;MyEpicSmartContract&#39;,
     )
-    const nftContract = await nftContractFactory.deploy()
-    await nftContract.deployed()
-    console.log(&#39;Contract deployed to:&#39;, nftContract.address)
+    await nftContract.waitForDeployment()
+    console.log(&#39;Contract deployed to:&#39;, await nftContract.getAddress())
 
     const svg = &#39;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#39;
 
@@ -376,12 +389,12 @@ describe(&#39;MyEpicSmartContract contract&#39;, function () {
 <p>You will be guided on the setup phase by Metamask. When this part is done, switch to <code>Sepolia network</code>, you should be on the Ethereum mainnet at first. If you don&#39;t see the <code>Sepolia network</code> click on &#34;Show/hide testnet&#34;.</p>
 <p>Once it&#39;s done you will see that you have 0 SepoliaETH 😢</p>
 <p>So in order to get some SepoliaETH you will have to request some in a faucet.</p>
-<p>This one should work <a href="https://sepoliafaucet.com/" target="_blank">https://sepoliafaucet.com/</a>, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).</p>
-<p>If you got some eth let&#39;s go to the next part 🔥</p>
+<p>This one should work <a href="https://sepoliafaucet.com/" target="_blank">https://sepoliafaucet.com/</a>, you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your ETH just copy and paste in the input our public key address from Metamask (the one that looks like 0xf20...4D8 when you open it).</p>
+<p>If you got some ETH let&#39;s go to the next part 🔥</p>
 <h2 is-upgraded>Deploy</h2>
-<p>Deploying our contract is pretty much like running it with the <code>run.mjs</code> script thanks to Hardhat.</p>
+<p>Deploying our contract is pretty much like running it with the <code>run.ts</code> script thanks to Hardhat.</p>
 <p>So let&#39;s create a new script <code>deploy.mjs</code>:</p>
-<pre><code language="language-javascript" class="language-javascript">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
+<pre><code language="language-solidity" class="language-solidity">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
 const nftContract = await nftContractFactory.deploy();
 await nftContract.deployed();
 console.log(&#34;Contract deployed to:&#34;, nftContract.address);
@@ -471,7 +484,8 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <p>Note the provider takes a property (commonly called <code>prop</code> in react) <code>getLibrary</code>.<br> It is mandatory to initiate the web3 library we want to use. This makes <code>react-web3</code> agnostic of your client library.<br> Here, we pass a function to initialize <code>Web3Provider</code> from <code>ethers</code>, the library commonly used.</p>
 <p>Great! Now we can discuss with the wallet in our React components!</p>
 <h2 is-upgraded>Connect to a wallet</h2>
-<p>The next code to update will be the <code>Web3WalletConnector</code>. This component will configure and handle all the connection logic. In that, we will find:</p>
+<p>The next code to update will be the <strong><code>Web3WalletConnector</code></strong></p>
+<p><strong> component</strong>. This component will configure and handle all the connection logic. In that, we will find:</p>
 <ul>
 <li>The chain configuration,</li>
 <li>Displaying a connection button the user is not connected,</li>
@@ -510,11 +524,12 @@ import { Web3Provider } from &#34;@ethersproject/providers&#34;;
 <h2 is-upgraded>Connection testing</h2>
 <p>To test a wallet connection, you need to first have a Wallet.<br> You should already have one so, let&#39;s go click our connect button.<br> You should see a pop-up asking you to approve the connection to our website. If you accept, you should then see your address instead of the login button.</p>
 <p>Awesome!</p>
-<p>If you wonder what&#39;s under the button, you can look for <code>Web3WalletButton</code>.<br> It calls the hook <code>useWeb3React</code>, and gets the connected address, and the active props.</p>
+<p>If you wonder what&#39;s under the button, you can look for <strong><code>Web3WalletButton</code></strong></p>
+<p><strong> component</strong>.<br> It calls the hook <code>useWeb3React</code>, and gets the connected address, and the active props.</p>
 <p>From the <code>active</code> props, we decide what we display: a truncated address or a connection button.</p>
 <p>The parent component <code>Web3WalletConnector</code> displayed an additional logout button when we are connected.</p>
 <p>We still have to complete the disconnected behavior.</p>
-<p>From the <code>useWeb3React</code>, get another property: <code>disconnect</code>. It is a function. Call it from the disconnect function, and we are good! Good Job! 🙌</p>
+<p>From the <code>useWeb3React</code>, get another property: <code>desactivate</code>. It is a function. Call it from the disconnect function, and we are good! Good Job! 🙌</p>
 
 
       </google-codelab-step>
@@ -573,7 +588,7 @@ cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContr
 <p>And for the signers, we&#39;ve created a variable for it, perfect!</p>
 <p>We should have this:</p>
 <pre><code language="language-tsx" class="language-tsx">    const signer = library.getSigner()
-    const contract = new Contract(
+    const connectedContract = new Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
       signer
@@ -582,7 +597,7 @@ cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContr
 <p>Now we have a contract client instance, we can interact with our contract!<br> To listen to events, we need to call the <code>on</code> method and pass it our event name <code>NewNFTMinted</code> as the first parameter, and a callback as the second parameter.<br> The first argument of the callback is the contract address, and the second is the return type of the method called (here the token id is a big number).</p>
 <p>ℹ️ to get the number of our token from a BigNumber, we need to call <code>toNumber</code> method on it.</p>
 <p>Our UI will be simple. We will display an alert with the received information.</p>
-<pre><code language="language-tsx" class="language-tsx">    contract.on(&#39;NewNFTMinted&#39;, (from, tokenId) =&gt; {
+<pre><code language="language-tsx" class="language-tsx">    connectedContract.on(&#39;NewNFTMinted&#39;, (from, tokenId) =&gt; {
       console.log(from, tokenId.toNumber())
       alert(
         `Hey there! We&#39;ve minted your NFT and sent it to your wallet. You can see it in metasmask, just import it ! Contract is ${CONTRACT_ADDRESS} and tokenId is ${tokenId}`
