@@ -34,8 +34,19 @@ What we want to do here is to create an NFT based on our custom duck! That will 
 
 Are you ready? Let's go! 🚀
 
+
 ## Init your project 🔨
 Duration: 0:05:00
+
+
+### Prerequisites
+
+🛠 If you don't have yarn installed you can install it globally like that 
+```sh
+npm install --global yarn
+```
+
+### Clone the repo
 
 If you have not done it yet, you can start by cloning this repo
 ```sh
@@ -73,12 +84,7 @@ yarn install
 yarn hardhat
 ```
 
-🛠 If you don't have yarn installed you can install it globally like that 
-```sh
-npm install --global yarn
-```
-
-Choose to create a new Javascript project, then accept the following step.
+Choose to create a new TypeScript project, then accept the following step.
 
 This will create folders :
 
@@ -87,13 +93,18 @@ This will create folders :
 - `test`: unit test sources,
 - `hardhat-config.js` : config file for Hardhat
 
-Finally, run `yarn hardhat node` and this should print out a bunch of accounts.
+Finally, run `yarn hardhat node`.  
+This command run a local Ethereum node on your machine. You have now a BlockChain running! 
+It also print out a bunch of accounts full of ethers that we can use to test our application.
 
 Hardhat will generate some files for you, to make sure everything is working, run:
 
 ```sh
  yarn hardhat compile
 ```
+
+This is interesting, we **compile** our code. This means Ethereum (or more precisely the "Ethereum Virtual Machine") 
+work with a compiled version of our program, also called **byte code**.
 
 Then run:
 
@@ -103,7 +114,7 @@ Then run:
 
 You should see a bunch of tests succeeded 🎉
 
-You can now delete `Lock.js` under test, deploy.js under scripts and `Lock.sol` under contracts. (not the folder!)
+You can now delete `Lock.js` under test, `deploy.js` under scripts and `Lock.sol` under contracts. (not the folder!)
 
 ## Write your first smart contract 🆕
 Duration: 0:20:00
@@ -118,7 +129,7 @@ The language is influenced by C++, Python and JavaScript.
 
 Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features.
 
-You can find the doc [here](https://docs.soliditylang.org/en/v0.8.17/) if you want to get an overview.
+You can find the doc [here](https://docs.soliditylang.org) if you want to get an overview.
 
 Let's create a new file `MyEpicSmartContract.sol` under `contracts` folder.  
 Be careful file structure is important!
@@ -162,6 +173,8 @@ import "hardhat/console.sol";
 contract MyEpicSmartContract {
 
     // ⬇️  If you know OOP, you're familiar with that 😝
+    // If you're not, it's the first function called in our contract, 
+    // when the contract is created = the contract is deployed for the first time.
     constructor() {
         console.log("Hello World !");
     }
@@ -184,9 +197,9 @@ contract MyEpicSmartContract {
 
 Then you can create your fonction 
 
-```javscript
+```javascript
 function setName(string newName) {
-  name = x;
+  name = newName;
 }
 ```
 
@@ -204,14 +217,16 @@ function setName(string x) public {
 
 [Here](https://solidity-by-example.org/visibility/) is the visibility doc for Solidity if you are curious about other visibilities.
 
-Head back to your terminal, you should also see this error `TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.`
+Head back to your terminal. Try to compile again. You should also see this error `TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.`
 
 The solidity compiler tells you here that you need to specify the [storage location](https://solidity-by-example.org/data-locations/) of your input name. You should use `calldata`, it's a special data location that contains function arguments, and the advantage is that it cost nothing. `memory` could work too but `calldata` is designed for input parameters so let's use this.
 
 Then another function `sayHello` will simply use the name you just set to do a console log like that
-```console.log("Hello World !");``` 
+```console.log("Hello <name> !");```  
 
 This should be good for the `setName` method, go ahead and create the `sayHello` method now.
+
+ℹ️ To concatenated strings, you can use `string.concat` method.
 
 Again, here is a [link](https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html) to help you with that.
 
@@ -223,23 +238,30 @@ Hardhat allows us to deploy our smart contract in a local blockchain, and it all
 
 We just have to write a small script to do that, so let's go!
 
-Create a file `run.mjs` under `scripts`.
+Create a file `run.ts` under `scripts`.
 
-```javascript
-const contractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
-const contract = await contractFactory.deploy();
-await contract.deployed();
-console.log("Contract deployed to:", contract.address);
+```typescript
+import { ethers } from "hardhat";
 
-// Call the function.
-let txn = await contract.setName("Sunny Tech")
-// Wait for it to be finished.
-await txn.wait()
-// Call another function
-await contract.sayHello()
+async function main() {
+  const contract = await ethers.deployContract("MyEpicSmartContract");
+  await contract.waitForDeployment();
+
+  console.log(
+    `Contract deployed to : ${await contract.getAddress()}`
+  );
+  const tx = await contract.setName("Sunny Tech");
+  await tx.wait();
+  await contract.sayHello();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 ```
 
-To call your script just run `yarn hardhat run scripts/run.mjs`.
+To call your script just run `yarn hardhat run scripts/run.ts`.
 
 You should get something like that!
 
@@ -272,7 +294,7 @@ yarn add @openzeppelin/contracts
 
 Then import them in our contract like that:
 
-```javascript
+```typescript
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 ```
@@ -305,7 +327,7 @@ We don't want to store the whole duck SVG in our contract because storage in the
 ℹ️ Remember that data in the blockchain are immutable, this is why our URL must be accessible FOREVER! That's why it's strongly recommended to store our image in a decentralized store file system like IPFS.
 
 
-```javascript
+```solidity
 function makeAnEpicNFT(string memory srcTokenUri) public { 
 
 }
@@ -315,7 +337,7 @@ Each of our NFTs will need a unique ID to do that we will use the `Counters.sol`
 
 Add this to your contract:
 
-```javascript
+```solidity
 using Counters for Counters.Counter;
 Counters.Counter private _tokenIds;
 ```
@@ -324,13 +346,13 @@ Let's code our contract to mint an NFT now!
 
 First, we want to get the current ID for your new NFT.
 
-```javascript
+```solidity
 uint256 newItemId = _tokenIds.current();
 ````
 
 Then we will mint our NFT calling the method from the OpenZeppelin contract (all internal methods are prefixed with an underscore)
 
-```javascript
+```solidity
 _safeMint(msg.sender, newItemId);
 ```
 
@@ -437,7 +459,7 @@ That's cool and stuff but how can I test my code? Let's see that in the next cha
 ## Test it!
 Duration: 0:20:00
 
-To test our smart contract we can update the `run.mjs` script to create our contract then call our new method `makeAnEpicNft`.
+To test our smart contract we can update the `run.ts` script to create our contract then call our new method `makeAnEpicNft`.
 
 ```javascript
 const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
@@ -466,23 +488,23 @@ That's nice but I think we can have better a test, can we unit-test our contract
 
 Let's create a `MySmartContractSolTest.js` file under the package `test`
 
-We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.mjs` with some tests at the end.  
+We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.ts` with some tests at the end.  
 
 Here is the code:
 
 ```javascript
-const { expect } = require('chai')
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe('MyEpicSmartContract contract', function () {
   it('Should emit NewNFTMinted', async function () {
     const [owner] = await ethers.getSigners()
 
-    const nftContractFactory = await hre.ethers.getContractFactory(
+    const nftContract = await ethers.deployContract(
       'MyEpicSmartContract',
     )
-    const nftContract = await nftContractFactory.deploy()
-    await nftContract.deployed()
-    console.log('Contract deployed to:', nftContract.address)
+    await nftContract.waitForDeployment()
+    console.log('Contract deployed to:', await nftContract.getAddress())
 
     const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
 
@@ -526,29 +548,35 @@ Once it's done you will see that you have 0 SepoliaETH 😢
 
 So in order to get some SepoliaETH you will have to request some in a faucet.
 
-This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your eth just copy and paste in the input our public key address from metamask (the one that looks like 0xf20...4D8 when you open it).
+This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your ETH just copy and paste in the input our public key address from Metamask (the one that looks like 0xf20...4D8 when you open it).
 
-If you got some eth let's go to the next part 🔥
+If you got some ETH let's go to the next part 🔥
 
 ### Deploy
 
-Deploying our contract is pretty much like running it with the `run.mjs` script thanks to Hardhat. 
+Deploying our contract is pretty much like running it with the `run.ts` script thanks to Hardhat. 
 
-So let's create a new script `deploy.mjs`:
+So let's create a new script `deploy.ts`:
 
-```javascript
-const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
-const nftContract = await nftContractFactory.deploy();
-await nftContract.deployed();
-console.log("Contract deployed to:", nftContract.address);
+```typescript
+import { ethers } from "hardhat";
 
-const svg = 'https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png'
+async function main() {
+  const contract = await ethers.deployContract("MyEpicSmartContract");
+  await contract.waitForDeployment();
 
-// Call the function.
-let txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
-console.log("Minted NFT #1")
+  console.log(`Contract deployed to : ${await contract.getAddress()}`);
+
+  const svg = "https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png";
+  const tx = await contract.makeAnEpicNFT(svg);
+  await tx.wait();
+  console.log("Minted NFT #1");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
 ```
 
 Now we have some setup to do.
@@ -565,7 +593,7 @@ networks: {
   },
 ```
 
-Each time you want to deploy to a specific network you will need to add it like that in our Hardhat config. Pretty easy no?  
+Each time you want to deploy to a specific network you will need to add it like that in our Hardhat configuration. Pretty easy no?  
 You can deploy to every EVM-compatible blockchain like that, even a blockchain like Avalanche 😉
 
 You have surely noticed the `process.env.STAGING_ALCHEMY_KEY_URL` and `process.env.PRIVATE_KEY` values.
@@ -585,14 +613,14 @@ yarn add -D dotenv
 
 Then add the import on top of your Hardhat config file:
 
-```javascript
+```typescript
 require('dotenv').config();
 ```
 
 Finally, run:
 
 ```bash
-yarn hardhat run scripts/deploy.mjs --network sepolia
+yarn hardhat run scripts/deploy.ts --network sepolia
 ```
 
 You should get something like that:
@@ -654,6 +682,8 @@ friendly tools to get a reactive state in react components.
 
 Now you probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
 
+From now, you can launch the app in development mode by running `yarn start` in `src/app`.
+
 ## Configure your front to connect a Wallet 💰
 Duration: 0:25:00
 
@@ -663,19 +693,29 @@ As we saw, you add some dependencies to interact with the blockchain.
 This dependency needs to instantiate a `Context` to share the state with the whole app.
 So the first modification we have to make is in the `App.ts` component.  
 
-First, import the context `Provider` and the web3 library:
+First, import the context `Provider` and the Web3 library:
 
 ```tsx
-import { Web3ReactProvider } from '@web3-react/core'
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3ReactProvider, initializeConnector } from '@web3-react/core'
+import { MetaMask } from "@web3-react/metamask";
 ```
 
-Then, wrap the whole JSX code in the `return` block by the web3 provider:
+Now, we need to create the MetaMask connector. 
+It will allow our application to the wallet you've installed, and interact with the BlockChain :  
+
+```typescript
+const metaMaskConnector = initializeConnector<MetaMask>((actions) => new MetaMask({ actions }))
+```
+
+Note: if you are building, you will need to handle more types of wallet, but `@web3-react` will provide you 
+all the needed connectors. Here, for our example, metaMask is enough. 
+
+Then, wrap the whole JSX code in the `return` block by the Web3 provider:
 
 ```tsx
   // ...
   return (
-    <Web3ReactProvider getLibrary={(provider) => new Web3Provider(provider)}>
+    <Web3ReactProvider connectors={[metaMaskConnector]}>
       <div className={styles.app}>
         {/* ... */}
      </div>
@@ -683,10 +723,10 @@ Then, wrap the whole JSX code in the `return` block by the web3 provider:
   )
 ```
 
-Note the provider takes a property (commonly called `prop` in react) `getLibrary`.  
+Note the provider takes a property (commonly called `prop` in react) `connectors`.  
 It is mandatory to initiate the web3 library we want to use. This makes `react-web3` agnostic of your
 client library.  
-Here, we pass a function to initialize `Web3Provider` from `ethers`, the library commonly used.
+Here, we pass the metamask connector previously initialized. This will allow us to connect our metaMask wallet. 
 
 Great! Now we can discuss with the wallet in our React components!
 
@@ -708,57 +748,57 @@ Those variables are network configurations. We've put them for you, but know you
 Then, we have an empty component. For now, it does not contain any logic, but some UI. 
 Here we can start working 💪.
 
-The first step here is to remove the `return null` statement. You should now see the connect button displayed on the 
-interface.
+The first step here is to remove the `return null` statement and uncomment the next `return` statement. 
+You should now see the connect button displayed on the interface.
 
-We've put a static variable `active` to `false`. We want to get this value from the wallet instead. 
-For that, we will call the `useWebReact` hook. This hook returns an object containing an `active` property. 
+We've put a static variable `isActive` to `false`. We want to get this value from the wallet instead. 
+For that, we will call the `useWebReact` hook. This hook returns an object containing an `isActive` property. 
 Perfect, this is exactly what we want! 
 
-```tsx
-  const { active } = useWeb3React<Web3Provider>()
+```typescript
+  const { isActive } = useWeb3React<Web3Provider>()
 ```
 
 Ok, now we know if we are connected directly from the wallet, nice.
 But, as we are not connected, we want to handle the connection. 
 For that, the goal is to fill the `connect` function.  
 
-From the hook, we will get additionals properties: `activate` and `error`
+From the hook, we will get an additional property: `connector`.
+This is the metaMask object, allowing us to interact with the wallet. 
 
-```tsx
-  const { active, activate, error } = useWeb3React<Web3Provider>()
+```typescript
+  const { isActive, connector } = useWeb3React();
 ```
 
-If we take a look at the activated signature, we can see it takes an argument `injected`. 
-WTF is that?! 😱
+We call the `activate` method from the connector to connect to the user wallet.  
+We can also provide the target blockchain information in parameter.  
+We already created a file exporting those informations for you.
 
-It is information about the chains our application can use. 
+It should look like this
 
-Chains' information makes sense now!
-
-We are going to declare a new variable `injected`, by instantiating a new `InjectedConnector`.  
-The constructor takes an object, with the property `supportedChainIds`.
-
-```tsx
-const injected = new InjectedConnector({
-  supportedChainIds: [
-    parseInt(ETHEREUM_TESTNET_PARAMS.chainId, 16),
-    parseInt(AVALANCHE_TESTNET_PARAMS.chainId, 16),
-  ],
-})
-```
-
-Because this variable is not reactive, it can be defined outside our component.
-
-Now we have all our `activate` dependencies, we can call our function in `connect` function.
-
-```tsx
+```typescript
   async function connect() {
-    await activate(injected)
+    await connector.activate(ETHEREUM_TESTNET_PARAMS)
   }
 ```
 
 Time to test!
+
+If we want to handle errors, we need to surround the `activate` calls with a try/catch.  
+
+```typescript
+  async function connect() {
+    try {
+    setError(undefined)
+    await connector.activate(ETHEREUM_TESTNET_PARAMS)
+    } catch (e) {
+      console.log(e)
+      setError(e as Error)
+    }
+  }
+```
+
+Here we also reset the error state before trying to connect.
 
 ### Connection testing
 
@@ -767,19 +807,19 @@ You should already have one so, let's go click our connect button.
 You should see a pop-up asking you to approve the connection to our website.
 If you accept, you should then see your address instead of the login button. 
 
-Awesome!
+Awesome! Here, you have the "Web3" kind of login. You have the public identifier of your user !
+Isn't it a kind way to connect? 😁
 
 If you wonder what's under the button, you can look for **`Web3WalletButton` component**.  
 It calls the hook `useWeb3React`, and gets the connected address, and the active props.
 
-From the `active` props, we decide what we display: a truncated address or a connection button.
+From the `isActive` props, we decide what we display: a truncated address or a connection button.
 
 The parent component `Web3WalletConnector` displayed an additional logout button when we are connected.
 
 We still have to complete the disconnected behavior. 
 
-From the `useWeb3React`, get another property: `desactivate`. It is a function. Call it from the 
-disconnect function, and we are good! Good Job! 🙌
+From the `connector`, call the function `resetState` into the `disconnect` function and we are good! Good Job! 🙌
 
 ## Integrate and interact with your smart contract
 Duration: 0:15:00
@@ -809,25 +849,25 @@ To achieve that, we want to call our smart contract function `makeAnEpicNFT`,
 and listen to the event `NewNFTMinted`.  
 From the event, we will get the token id, and display an URL to be able to see it.  
 
-We have created for you the `Mint` component containing the structure so we can focus 
+We have created for you the `Mint` (`MintButton.tsx`) component containing the structure so we can focus 
 on the business logic. Take a look at this component.
 
 We have two functions to fill: `setupEventListener` and `askContractToMintNft`.  
 The first one will listen to the mint event on our contract, and the second will call our 
 contract to mint the NFT.  
 
-The component return `null` if `active` is `false`, and a button otherwise.  
+The component return `null` if `isActive` is `false`, and a button otherwise.  
 This means if you are connected, the button should appear.
 
 Let's go!
 
-The first thing is to replace the `active` variable to get it from the `useWeb3React` hook.  
+The first thing is to replace the `isActive` variable to get it from the `useWeb3React` hook.  
 We already did it, so it should be easy 😛
 
-Take also the `library` property from the hook, we will need it. It's better to give 
-`Web3Provider` as a generic parameter to the hook. It will type the `library` property for us.
+Take also the `provider` property from the hook, we will need it. It's better to give 
+`Web3Provider` as a generic parameter to the hook. It will type the `provider` property for us.
 
-We take `library` here because we need it to call the blockchain.  
+We take `provider` here because we need it to call the blockchain.  
 
 Let's code the event listener. It's the "easier" part, and we will be able to 
 understand the basics.
@@ -838,16 +878,16 @@ First, the variable `provider` can be `undefined`, so we need to verify it isn't
 
 ```ts
   const setupEventListener = useCallback(() => {
-    if (!library) {
+    if (!provider) {
       return
     }
   }
 ```
 
-Then, because of the inherited behavior of `ethers` library, we need to get the transaction `signer`.  
+Then, because of the inherited behavior of `ethers` provider, we need to get the transaction `signer`.  
 
-```tsx
-    const signer = library.getSigner()
+```typescript
+    const signer = provider.getSigner()
 ```
 
 Secondly, we will create a contract client instance.  
@@ -869,27 +909,22 @@ Let's fill them in one by one.
 On the top of the file, we've created a `CONTRACT_ADDRESS` constant to replace. Put here the contract address 
 you got when you deployed your contract.  
 
-For the ABI, it should be on the contract package. Let's copy the `MyEpicSmartContract.json` in the `src` folder, 
-and then import it.  
+you can import it from our `contract` package :
 
-```bash
-# this assume your shell location is in the root folder
-cp packages/hardhat/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContract.json packages/app/src 
-```
-
-```tsx
-import myEpicNft from '../MyEpicSmartContract.json'
+```typescript
+import myEpicNft from "contract/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json";
 ```
 
 And for the signers, we've created a variable for it, perfect!  
 
 We should have this: 
 
-```tsx
-    const signer = library.getSigner()
+```typescript
+    const signer = provider.getSigner()
     const connectedContract = new Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
+      // @ts-ignore the typing of Signer is out of date.
       signer
     )
 ```
@@ -899,22 +934,29 @@ To listen to events, we need to call the `on` method and pass it our event name 
 The first argument of the callback is the contract address, and the second is the return type 
 of the method called (here the token id is a big number).
 
-ℹ️ to get the number of our token from a BigNumber, we need to call `toNumber` method on it.
-
 Our UI will be simple. We will display an alert with the received information.
 
-```tsx
+```typescript
     connectedContract.on('NewNFTMinted', (from, tokenId) => {
-      console.log(from, tokenId.toNumber())
+      console.log(from, tokenId)
       alert(
         `Hey there! We've minted your NFT and sent it to your wallet. You can see it in metasmask, just import it ! Contract is ${CONTRACT_ADDRESS} and tokenId is ${tokenId}`
       )
+      setIsLoading(false)
     })
 ```
 
-ℹ️ The `ethers` library used under the hood is not perfect here, and we lose our strong typing 😭
+ℹ️ The `ethers` provider used under the hood is not perfect here, and we lose our strong typing 😭
 
-Finally, add `library` in the dependency array of `useCallback`. This tells react to recompute the function if the `library` changes.
+To remove the event listening, we will return a cleanup function from the hook.  
+
+```typescript
+return () => {
+  connectedContract.off('NewNFTMinted')
+}
+```
+
+Finally, add `provider` and `setIsLoading` in the dependency array of `useCallback` (second argument). This tells react to recompute the function if the `provider` changes.
 
 🙌 We have a listener set up! 🙌 But we can't test it without minting an NFT, so let's do that!
 
@@ -940,7 +982,7 @@ But IPFS has some issues too. It's a protocol, which means the user will have to
 on his computer to interact with or use a gateway. Which is centralized 😅
 
 Here, we will use a gateway deployed on AWS. Some libraries allow us to run a minimal 
-IPFS node in Javascript in the browser. It would be a better solution since doing that we don't 
+IPFS node in JavaScript in the browser. It would be a better solution since doing that we don't 
 have a single point of failure. Never mind, for our little project the gateway solution was fun!
 
 Enough talk, let's code!
@@ -948,13 +990,13 @@ Enough talk, let's code!
 First, we will inform the UI we're doing some stuff and it needs to display a loader.  
 We've received a `setIsLoading` method from props, so let's call it.  
 
-```tsx
+```typescript
     setIsLoading(true)
 ```
 
 Then, we will verify we do have an SVG element or throw an error otherwise.  
 
-```tsx
+```typescript
     if (!svgRef.current) {
       throw new Error('No SVG')
     }
@@ -963,14 +1005,14 @@ Then, we will verify we do have an SVG element or throw an error otherwise.
 Now we're sure we have an SVG element, let's create an image from it.  
 Thankfully, we've created a `getSvgImageFromSvgElement` function for you 🫡
 
-```tsx
+```typescript
     const svg = await getSvgImageFromSvgElement(svgRef.current)
 ```
 
 And let's upload it to IPFS. Here too, you have a `uploadToIPFS` function to make your life easier 🫡
 This function takes an object parameter with 2 properties: `svg` and `name`
 
-```tsx
+```typescript
     const cid = await uploadSvgToIPFS({
       svg,
       name: `nft ${new Date().toISOString()}`,
@@ -986,11 +1028,12 @@ We will repeat it here.
 > YES IT IS! Two time duplication is ok, if this code was repeated 3,4,5 times, 
 > we would have created an abstraction.
 
-```tsx
-    const signer = library.getSigner()
+```typescript
+    const signer = provider.getSigner()
     const connectedContract = new ethers.Contract(
       CONTRACT_ADDRESS,
       myEpicNft.abi,
+      // @ts-ignore the typing of Signer is out of date.
       signer
     )
 ```
@@ -1001,22 +1044,10 @@ Before we was listening to an event, so we called `on` the method. Here to call 
 we can directly call the method on the contract instance.  
 
 If your IDE does not autocomplete, it's normal, the contract does not infer our ABI, and it's really
-sad 😭. 
+sad 😭. We plan to try [this new client library](https://wagmi.sh/) that fixes this problem
 
-```tsx
-    const nftTxn = await connectedContract.makeAnEpicNFT(`ipfs://${cid}`)
-```
-
-Then we will wait for the transaction to be processed
-
-```tsx
-    await nftTxn.wait()
-```
-
-And inform the UI we have FINISHED 🎉
-
-```tsx
-    setIsLoading(false)
+```typescript
+    await connectedContract.makeAnEpicNFT(`ipfs://${cid}`)
 ```
 
 TIME TO TEST!
