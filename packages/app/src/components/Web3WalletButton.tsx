@@ -16,9 +16,9 @@ const truncate = (input: string) =>
     : input
 
 export const Web3WalletButton: FC<Web3WalletButtonProps> = ({ connect }) => {
-  const { active, account } = useWeb3React()
+  const { isActive, account } = useWeb3React()
 
-  if (active && account) {
+  if (isActive && account) {
     return (
       <span className={styles.address}>
         Connected with{' '}

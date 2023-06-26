@@ -10,22 +10,23 @@ import { Web3Provider } from "@ethersproject/providers";
 const CONTRACT_ADDRESS = '0x9a33FaeB62C3176Bd79aF99b4e3bc8933474b463'
 
 type MintProps = {
-  svgRef: React.RefObject<SVGSVGElement>
-  setIsLoading: (loading: boolean) => void
-}
+  svgRef: React.RefObject<SVGSVGElement>;
+  setIsLoading: (loading: boolean) => void;
+};
 
 export const MintButton: FC<MintProps> = ({ svgRef, setIsLoading }) => {
-  const active = false
+  const isActive = false
   const setupEventListener = useCallback(() => {
   }, [])
   const askContractToMintNft = async () => {
   }
 
   useEffect(() => {
-    setupEventListener()
-  }, [setupEventListener])
+    const cleanup = setupEventListener();
+    return cleanup;
+  }, [setupEventListener]);
 
-  if (!active) return null
+  if (!isActive) return null;
   return (
     <button
       className={styles.circle}

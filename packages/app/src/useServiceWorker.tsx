@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, PropsWithChildren, useState } from 'react'
 import * as serviceWorker from './sw'
 
 type ServiceWorkerContextProps = {
@@ -13,7 +13,7 @@ const ServiceWorkerContext = React.createContext<ServiceWorkerContextProps>({
   update: () => {},
 })
 
-export const ServiceWorkerProvider: FC = ({ children }) => {
+export const ServiceWorkerProvider: FC<PropsWithChildren> = React.memo(({ children }) => {
   const [
     waitingServiceWorker,
     setWaitingServiceWorker,
@@ -69,7 +69,7 @@ export const ServiceWorkerProvider: FC = ({ children }) => {
       {children}
     </ServiceWorkerContext.Provider>
   )
-}
+})
 
 export const useServiceWorker = () => {
   return React.useContext(ServiceWorkerContext)

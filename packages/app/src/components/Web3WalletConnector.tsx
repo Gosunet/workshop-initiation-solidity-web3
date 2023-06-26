@@ -1,60 +1,27 @@
+import React, { useMemo, useState } from "react";
 
-import React, { useMemo } from 'react'
+import { Web3WalletButton } from "./Web3WalletButton";
 
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { Web3WalletButton } from './Web3WalletButton'
-
-import styles from './Web3WalletConnector.module.css'
-import { Web3Provider } from '@ethersproject/providers'
-
-const AVALANCHE_TESTNET_PARAMS = {
-  chainId: '0xA869',
-  chainName: 'Avalanche Testnet C-Chain',
-  nativeCurrency: {
-    name: 'Avalanche',
-    symbol: 'AVAX',
-    decimals: 18,
-  },
-  rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
-  blockExplorerUrls: ['https://cchain.explorer.avax-test.network/'],
-}
-
-const ETHEREUM_TESTNET_PARAMS = {
-  chainId: '0xaa36a7',
-  chainName: 'Ethereum Sepolia',
-  nativeCurrency: {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-  },
-  rpcUrls: ['https://sepolia.infura.io/v3/'],
-  blockExplorerUrls: ['https://sepolia.etherscan.io/'],
-}
+import styles from "./Web3WalletConnector.module.css";
+import { ETHEREUM_TESTNET_PARAMS } from "../connectors/chains/sepolia-eth";
 
 const Web3WalletConnector = () => {
-  const active = false
-  const error: any = null
+  const isActive = false;
+  const [error, setError] = useState<Error>();
 
-  async function connect() {
-  }
+  async function connect() {}
 
-  async function disconnect() {
-  }
+  async function disconnect() {}
 
-  const isUnsupportedChainIdError = useMemo(() => {
-    return error instanceof UnsupportedChainIdError
-  }, [error])
+  return null;
 
-  return null
+  // return (
+  //   <div className={styles.connector}>
+  //     <Web3WalletButton connect={connect} />
+  //     {isActive ? <button onClick={disconnect}>Disconnect</button> : null}
+  //     {error ? (<p className={styles.error}>{error.message}</p>) : null}
+  //   </div>
+  // )
+};
 
-  return (
-    <div className={styles.connector}>
-      {isUnsupportedChainIdError ? <p>Network change required</p> : null}
-      <Web3WalletButton connect={connect} />
-      {active ? <button onClick={disconnect}>Disconnect</button> : null}
-    </div>
-  )
-}
-
-export default Web3WalletConnector
+export default Web3WalletConnector;

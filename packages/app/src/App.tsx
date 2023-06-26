@@ -20,9 +20,9 @@ import AssetButton from './components/AssetButton'
 import UpdateApp from './components/UpdateApp'
 import useAssets from './useAssets'
 import styles from './App.module.css'
-import Web3WalletConnector from './components/Web3WalletConnector'
-import { MintButton } from './components/MintButton'
 import Loader from './components/Loader'
+import MintButton from './components/MintButton'
+import Web3WalletConnector from './components/Web3WalletConnector'
 
 function App() {
   const svgElement = useRef<SVGSVGElement>(null)
@@ -45,7 +45,7 @@ function App() {
     <div className={styles.app}>
       <div className={styles.background}></div>
       <div className={styles.header}>
-        <Web3WalletConnector />
+         <Web3WalletConnector />
         <div className={styles.title}>
           Pimp My <span className={styles.titleInner}>Duck</span>
           <ByZenika className={styles.byZenika} />

@@ -1,26 +1,26 @@
-import React, { FC, useState } from 'react'
-import cn from 'classnames'
+import React, { FC, PropsWithChildren, useState } from "react";
+import cn from "classnames";
 
-import styles from './Notification.module.css'
+import styles from "./Notification.module.css";
 
 type NotificationProps = {
-  actionLabel?: string
-  onActionClick?: () => void
-}
+  actionLabel?: string;
+  onActionClick?: () => void;
+};
 
-const Notification: FC<NotificationProps> = ({
+const Notification: FC<PropsWithChildren<NotificationProps>> = ({
   children,
-  actionLabel = 'OK',
+  actionLabel = "OK",
   onActionClick,
 }) => {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
 
   const handleAction = () => {
-    if (onActionClick) onActionClick()
-    setOpen(false)
-  }
+    if (onActionClick) onActionClick();
+    setOpen(false);
+  };
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <div className={styles.notification}>
@@ -34,7 +34,7 @@ const Notification: FC<NotificationProps> = ({
         {actionLabel}
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default Notification
+export default Notification;
