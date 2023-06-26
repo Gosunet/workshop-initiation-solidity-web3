@@ -1,18 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import { createRoot } from "react-dom/client";
 
-import './index.css'
-import { ServiceWorkerProvider } from './useServiceWorker'
-import * as serviceWorker from './sw'
-import App from './App'
+import "./index.css";
+import { ServiceWorkerProvider } from "./useServiceWorker";
+import * as serviceWorker from "./sw";
+import App from "./App";
 
-import 'pwacompat'
+import "pwacompat";
 
-serviceWorker.unregisterOnUncatchError()
+serviceWorker.unregisterOnUncatchError();
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root")!);
+root.render(
   <ServiceWorkerProvider>
     <App />
-  </ServiceWorkerProvider>,
-  document.getElementById('root')
-)
+  </ServiceWorkerProvider>
+);
