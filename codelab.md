@@ -113,7 +113,7 @@ Then run:
 
 You should see a bunch of tests succeeded 🎉
 
-You can now delete `Lock.js` under test, `deploy.js` under scripts and `Lock.sol` under contracts. (not the folder!)
+You can now delete `Lock.js` under test, `deploy.ts` under scripts and `Lock.sol` under contracts. (not the folder!)
 
 ## Write your first smart contract 🆕
 Duration: 0:20:00
@@ -218,12 +218,12 @@ function setName(string x) public {
 
 Head back to your terminal. Try to compile again. You should also see this error `TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.`
 
-The solidity compiler tells you here that you need to specify the [storage location](https://solidity-by-example.org/data-locations/) of your input name. You should use `calldata`, it's a special data location that contains function arguments, and the advantage is that it cost nothing. `memory` could work too but `calldata` is designed for input parameters so let's use this.
+The solidity compiler tells you here that you need to specify the [storage location](https://solidity-by-example.org/data-locations/) of your input name. You should use `calldata`, it's a special data location that contains function arguments, and the advantage is that it cost nothing. `memory` could work too but `calldata` is designed for input parameters so let's use this. 
 
-Then another function `sayHello` will simply use the name you just set to do a console log like that
-```console.log("Hello <name> !");```  
+This should be good for the `setName` method, go ahead and create a `sayHello` method now.
 
-This should be good for the `setName` method, go ahead and create the `sayHello` method now.
+The function `sayHello` will simply use the name you just set to do a console log like that
+```console.log("Hello <name> !");``` 
 
 ℹ️ To concatenated strings, you can use `string.concat` method.
 
@@ -283,6 +283,8 @@ Let's change that! What we want is a contract that enables us to `mint` an NFT. 
 But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" an ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
 
 That's a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).
+
+You can delete the name attribut and function we created before!
 
 We first need to add the OpenZeppelin dependency.
 In the `harhdat` folder run:
@@ -460,23 +462,34 @@ Duration: 0:20:00
 
 To test our smart contract we can update the `run.ts` script to create our contract and then call our new method `makeAnEpicNft`.
 
-```javascript
-const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
-const nftContract = await nftContractFactory.deploy();
-await nftContract.deployed();
-console.log("Contract deployed to:", nftContract.address);
+```typescript
+import { ethers } from "hardhat";
 
-const svg = "https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png"
+async function main() {
+    const contract = await ethers.deployContract("MyEpicSmartContract");
+    await contract.waitForDeployment();
 
-// Call the function.
-let txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
+    console.log(
+        `Contract deployed to : ${await contract.getAddress()}`
+    );
 
-// Mint another NFT for fun.
-txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
+    const svg = "https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png"
+
+    // Call the function.
+    let txn = await contract.makeAnEpicNFT(svg)
+    // Wait for it to be mined.
+    await txn.wait()
+
+    // Mint another NFT for fun.
+    txn = await contract.makeAnEpicNFT(svg)
+    // Wait for it to be mined.
+    await txn.wait()
+}
+
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 ```
 
 Here we used a png that is not stored in decentralized storage, but it's just for the test so it's not a problem, you can use any png.
@@ -485,7 +498,7 @@ Is it working? 🎉
 
 That's nice but I think we can have better a test, can we unit-test our contract? YES, we can!
 
-Let's create a `MySmartContractSolTest.js` file under the package `test`
+Let's create a `MySmartContractSolTest.ts` file under the package `test`
 
 We can test that we emit our `NewNFTMinted` event. It's pretty much the same code that the `run.ts` with some tests at the end.  
 
@@ -670,7 +683,7 @@ and then build some great stuff ✨
 In the `app` folder, do the following command:
 
 ```sh
-yarn add @web3-react/core @web3-react/injected-connector ethers @ethersproject/providers 
+yarn add @web3-react/core @web3-react/injected-connector @web3-react/metamask ethers @ethersproject/providers 
 ```
 
 Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.
@@ -690,7 +703,7 @@ Duration: 0:25:00
 
 As we saw, you add some dependencies to interact with the blockchain. 
 This dependency needs to instantiate a `Context` to share the state with the whole app.
-So the first modification we have to make is in the `App.ts` component.  
+So the first modification we have to make is in the `App.tsx` component.  
 
 First, import the context `Provider` and the Web3 library:
 
@@ -908,7 +921,7 @@ Let's fill them in one by one.
 On the top of the file, we've created a `CONTRACT_ADDRESS` constant to replace. Put here the contract address 
 you got when you deployed your contract.  
 
-you can import it from our `contract` package :
+For the abi, you can import it from our `contract` package:
 
 ```typescript
 import myEpicNft from "contract/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json";
