@@ -713,7 +713,9 @@ import { MetaMask } from "@web3-react/metamask";
 ```
 
 Now, we need to create the MetaMask connector. 
-It will allow our application to the wallet you've installed, and interact with the BlockChain :  
+It will allow our application to the wallet you've installed, and interact with the BlockChain.
+This declaration is static (does not changes between renders), so it should be declared **outside** the 
+component (the `App` function).
 
 ```typescript
 const metaMaskConnector = initializeConnector<MetaMask>((actions) => new MetaMask({ actions }))
@@ -924,7 +926,8 @@ you got when you deployed your contract.
 For the abi, you can import it from our `contract` package:
 
 ```typescript
-import myEpicNft from "contract/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json";
+import myEpicNft from "my-epic-nft/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json";
+//                      ^- package name in the `package.json`
 ```
 
 And for the signers, we've created a variable for it, perfect!  
