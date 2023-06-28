@@ -92,7 +92,7 @@ yarn hardhat
 <pre><code language="language-sh" class="language-sh"> yarn hardhat test
 </code></pre>
 <p>You should see a bunch of tests succeeded 🎉</p>
-<p>You can now delete <code>Lock.js</code> under test, <code>deploy.js</code> under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
+<p>You can now delete <code>Lock.js</code> under test, <code>deploy.ts</code> under scripts and <code>Lock.sol</code> under contracts. (not the folder!)</p>
 
 
       </google-codelab-step>
@@ -163,8 +163,8 @@ contract MyEpicSmartContract {
 <p><a href="https://solidity-by-example.org/visibility/" target="_blank">Here</a> is the visibility doc for Solidity if you are curious about other visibilities.</p>
 <p>Head back to your terminal. Try to compile again. You should also see this error <code>TypeError: Data location must be "memory" or "calldata" for parameter in function, but none was given.</code></p>
 <p>The solidity compiler tells you here that you need to specify the <a href="https://solidity-by-example.org/data-locations/" target="_blank">storage location</a> of your input name. You should use <code>calldata</code>, it&#39;s a special data location that contains function arguments, and the advantage is that it cost nothing. <code>memory</code> could work too but <code>calldata</code> is designed for input parameters so let&#39;s use this.</p>
-<p>Then another function <code>sayHello</code> will simply use the name you just set to do a console log like that <code>console.log("Hello <name> !");</code></p>
-<p>This should be good for the <code>setName</code> method, go ahead and create the <code>sayHello</code> method now.</p>
+<p>This should be good for the <code>setName</code> method, go ahead and create a <code>sayHello</code> method now.</p>
+<p>The function <code>sayHello</code> will simply use the name you just set to do a console log like that <code>console.log("Hello <name> !");</code></p>
 <p>ℹ️ To concatenated strings, you can use <code>string.concat</code> method.</p>
 <p>Again, here is a <a href="https://docs.soliditylang.org/en/v0.8.12/introduction-to-smart-contracts.html" target="_blank">link</a> to help you with that.</p>
 <p>Let&#39;s see how to run it!</p>
@@ -207,6 +207,7 @@ Hello Sunny Tech !
 <p>Let&#39;s change that! What we want is a contract that enables us to <code>mint</code> an NFT. Mint just means to create our NFT in the blockchain.</p>
 <p>But what&#39;s an NFT? On the EVM-compatible blockchain, an NFT is &#34;just&#34; an ERC-721 <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-721/" target="_blank">token</a>, which means that our smart contract should implement the ERC-721 interface!</p>
 <p>That&#39;s a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! <a href="https://github.com/OpenZeppelin" target="_blank">OpenZeppelin</a> is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).</p>
+<p>You can delete the name attribut and function we created before!</p>
 <p>We first need to add the OpenZeppelin dependency. In the <code>harhdat</code> folder run:</p>
 <pre><code language="language-bash" class="language-bash">yarn add @openzeppelin/contracts
 </code></pre>
@@ -323,27 +324,38 @@ _tokenIds.increment();
     
       <google-codelab-step label="Test it!" duration="20">
         <p>To test our smart contract we can update the <code>run.ts</code> script to create our contract and then call our new method <code>makeAnEpicNft</code>.</p>
-<pre><code language="language-javascript" class="language-javascript">const nftContractFactory = await hre.ethers.getContractFactory(&#39;MyEpicSmartContract&#39;);
-const nftContract = await nftContractFactory.deploy();
-await nftContract.deployed();
-console.log(&#34;Contract deployed to:&#34;, nftContract.address);
+<pre><code language="language-typescript" class="language-typescript">import { ethers } from &#34;hardhat&#34;;
 
-const svg = &#34;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#34;
+async function main() {
+    const contract = await ethers.deployContract(&#34;MyEpicSmartContract&#34;);
+    await contract.waitForDeployment();
 
-// Call the function.
-let txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
+    console.log(
+        `Contract deployed to : ${await contract.getAddress()}`
+    );
 
-// Mint another NFT for fun.
-txn = await nftContract.makeAnEpicNFT(svg)
-// Wait for it to be mined.
-await txn.wait()
+    const svg = &#34;https://theduckgallery.zenika.com/ducks/jeanphibaconnais.png&#34;
+
+    // Call the function.
+    let txn = await contract.makeAnEpicNFT(svg)
+    // Wait for it to be mined.
+    await txn.wait()
+
+    // Mint another NFT for fun.
+    txn = await contract.makeAnEpicNFT(svg)
+    // Wait for it to be mined.
+    await txn.wait()
+}
+
+main().catch((error) =&gt; {
+    console.error(error);
+    process.exitCode = 1;
+});
 </code></pre>
 <p>Here we used a png that is not stored in decentralized storage, but it&#39;s just for the test so it&#39;s not a problem, you can use any png.</p>
 <p>Is it working? 🎉</p>
 <p>That&#39;s nice but I think we can have better a test, can we unit-test our contract? YES, we can!</p>
-<p>Let&#39;s create a <code>MySmartContractSolTest.js</code> file under the package <code>test</code></p>
+<p>Let&#39;s create a <code>MySmartContractSolTest.ts</code> file under the package <code>test</code></p>
 <p>We can test that we emit our <code>NewNFTMinted</code> event. It&#39;s pretty much the same code that the <code>run.ts</code> with some tests at the end.</p>
 <p>Here is the code:</p>
 <pre><code language="language-javascript" class="language-javascript">import { expect } from &#34;chai&#34;;
@@ -461,7 +473,7 @@ Minted NFT #1
 </ul>
 <p>To interact with the blockchain, we need a few additional dependencies, let&#39;s install them, and then build some great stuff ✨</p>
 <p>In the <code>app</code> folder, do the following command:</p>
-<pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector ethers @ethersproject/providers 
+<pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector @web3-react/metamask ethers @ethersproject/providers 
 </code></pre>
 <p>Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.</p>
 <p>Packages under <code>@web3-react/*</code> are bridges between react and client libraries such <code>ethers</code> (we are using) or <code>web3</code> library. It gives us friendly tools to get a reactive state in react components.</p>
@@ -473,12 +485,12 @@ Minted NFT #1
     
       <google-codelab-step label="Configure your front to connect a Wallet 💰" duration="25">
         <h2 is-upgraded>Context instantiation</h2>
-<p>As we saw, you add some dependencies to interact with the blockchain. This dependency needs to instantiate a <code>Context</code> to share the state with the whole app. So the first modification we have to make is in the <code>App.ts</code> component.</p>
+<p>As we saw, you add some dependencies to interact with the blockchain. This dependency needs to instantiate a <code>Context</code> to share the state with the whole app. So the first modification we have to make is in the <code>App.tsx</code> component.</p>
 <p>First, import the context <code>Provider</code> and the Web3 library:</p>
 <pre><code language="language-tsx" class="language-tsx">import { Web3ReactProvider, initializeConnector } from &#39;@web3-react/core&#39;
 import { MetaMask } from &#34;@web3-react/metamask&#34;;
 </code></pre>
-<p>Now, we need to create the MetaMask connector. It will allow our application to the wallet you&#39;ve installed, and interact with the BlockChain :</p>
+<p>Now, we need to create the MetaMask connector. It will allow our application to the wallet you&#39;ve installed, and interact with the BlockChain. This declaration is static (does not changes between renders), so it should be declared <strong>outside</strong> the component (the <code>App</code> function).</p>
 <pre><code language="language-typescript" class="language-typescript">const metaMaskConnector = initializeConnector&lt;MetaMask&gt;((actions) =&gt; new MetaMask({ actions }))
 </code></pre>
 <p>Note: if you are building, you will need to handle more types of wallets, but <code>@web3-react</code> will provide you with all the needed connectors. Here, for our example, metaMask is enough.</p>
@@ -591,8 +603,9 @@ import { MetaMask } from &#34;@web3-react/metamask&#34;;
 </ul>
 <p>Let&#39;s fill them in one by one.</p>
 <p>On the top of the file, we&#39;ve created a <code>CONTRACT_ADDRESS</code> constant to replace. Put here the contract address you got when you deployed your contract.</p>
-<p>you can import it from our <code>contract</code> package :</p>
-<pre><code language="language-typescript" class="language-typescript">import myEpicNft from &#34;contract/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json&#34;;
+<p>For the abi, you can import it from our <code>contract</code> package:</p>
+<pre><code language="language-typescript" class="language-typescript">import myEpicNft from &#34;my-epic-nft/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json&#34;;
+//                      ^- package name in the `package.json`
 </code></pre>
 <p>And for the signers, we&#39;ve created a variable for it, perfect!</p>
 <p>We should have this:</p>
