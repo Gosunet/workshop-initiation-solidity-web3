@@ -86,16 +86,15 @@ yarn hardhat
 
 Choose to create a new TypeScript project, then accept the following step.
 
-This will create folders :
-
-- `contracts` : folder for our solidity files,
-- `scripts` : a directory that contains scripts to handle deployment, run, ...
-- `test`: unit test sources,
-- `hardhat-config.js` : config file for Hardhat
+This will create folders:
+- `contracts`: folder for our solidity files,
+- `scripts`: a directory that contains scripts to handle deployment, run, ...
+- `test`: unit test sources
+- `hardhat-config.js`: config file for Hardhat
 
 Finally, run `yarn hardhat node`.  
-This command run a local Ethereum node on your machine. You have now a BlockChain running! 
-It also print out a bunch of accounts full of ethers that we can use to test our application.
+This command runs a local Ethereum node on your machine. You have now a BlockChain running! 
+It also prints out a bunch of accounts full of ethers that we can use to test our application.
 
 Hardhat will generate some files for you, to make sure everything is working, run:
 
@@ -104,7 +103,7 @@ Hardhat will generate some files for you, to make sure everything is working, ru
 ```
 
 This is interesting, we **compile** our code. This means Ethereum (or more precisely the "Ethereum Virtual Machine") 
-work with a compiled version of our program, also called **byte code**.
+works with a compiled version of our program, also called **byte code**.
 
 Then run:
 
@@ -271,7 +270,7 @@ Contract deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 Hello Sunny Tech !
 ```
 
-`0x5FbDB2315678afecb367f032d93F642f64180aa3` here is the contract address in our local blockchain where the contract was deployed.
+`0x5FbDB2315678afecb367f032d93F642f64180aa3` is here the contract address in our local blockchain where the contract was deployed.
 
 
 ## Create a contract that mints NFTs 🦆
@@ -281,7 +280,7 @@ It's all fun and stuff but our contract is not doing anything useful for our use
 
 Let's change that! What we want is a contract that enables us to `mint` an NFT. Mint just means to create our NFT in the blockchain.
 
-But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" a ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
+But what's an NFT? On the EVM-compatible blockchain, an NFT is "just" an ERC-721 [token](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/), which means that our smart contract should implement the ERC-721 interface!
 
 That's a lot of work. Fortunately for us in Solidity, we can use inheritance and there are open-source contracts available that we can inherit from to do that! [OpenZeppelin](https://github.com/OpenZeppelin) is probably the most know for that, is popular, used by a lot of people, and secure (at least it has been audited strongly and used in the real world without flaws).
 
@@ -358,7 +357,7 @@ _safeMint(msg.sender, newItemId);
 
 Notice `msg.sender` here, it's a magic solidity variable that holds the address of the wallet that calls this method.
 
-We want our NFT to have an image, to do that we will create a `payload` that respects some convention used to parse NFT, doing that our NFT will be readable in a marketplace like [OpenSea](https://opensea.io/) or the metamask wallet. We also want our payload to be as tiny as possible, that's why we will encode it in base64.
+We want our NFT to have an image, to do that we will create a `payload` that respects some convention used to parse NFT. By doing that our NFT will be readable in a marketplace like [OpenSea](https://opensea.io/) or the metamask wallet. We also want our payload to be as tiny as possible, that's why we will encode it in base64.
 
 ```javascript
 // Get all the JSON metadata in place and base64 encode it.
@@ -417,7 +416,7 @@ and emit it at the end of your `makeAnEpicNFT` method.
 emit NewNFTMinted(msg.sender, newItemId);
 ```
 
-At the end you should get something like that:
+At the end, you should get something like that:
 
 ```javascript
 function makeAnEpicNFT(string memory srcTokenUri) public {
@@ -459,7 +458,7 @@ That's cool and stuff but how can I test my code? Let's see that in the next cha
 ## Test it!
 Duration: 0:20:00
 
-To test our smart contract we can update the `run.ts` script to create our contract then call our new method `makeAnEpicNft`.
+To test our smart contract we can update the `run.ts` script to create our contract and then call our new method `makeAnEpicNft`.
 
 ```javascript
 const nftContractFactory = await hre.ethers.getContractFactory('MyEpicSmartContract');
@@ -546,7 +545,7 @@ switch to `Sepolia network`, you should be on the Ethereum mainnet at first. If 
 
 Once it's done you will see that you have 0 SepoliaETH 😢
 
-So in order to get some SepoliaETH you will have to request some in a faucet.
+To get some SepoliaETH you will have to request some in a faucet!
 
 This one should work [https://sepoliafaucet.com/](https://sepoliafaucet.com/), you gonna need to create an Alchemy account though but we will need one right after so do create one and request our SepoliaETH. To request your ETH just copy and paste in the input our public key address from Metamask (the one that looks like 0xf20...4D8 when you open it).
 
@@ -707,8 +706,8 @@ It will allow our application to the wallet you've installed, and interact with 
 const metaMaskConnector = initializeConnector<MetaMask>((actions) => new MetaMask({ actions }))
 ```
 
-Note: if you are building, you will need to handle more types of wallet, but `@web3-react` will provide you 
-all the needed connectors. Here, for our example, metaMask is enough. 
+Note: if you are building, you will need to handle more types of wallets, but `@web3-react` will provide you 
+with all the needed connectors. Here, for our example, metaMask is enough. 
 
 Then, wrap the whole JSX code in the `return` block by the Web3 provider:
 
@@ -723,7 +722,7 @@ Then, wrap the whole JSX code in the `return` block by the Web3 provider:
   )
 ```
 
-Note the provider takes a property (commonly called `prop` in react) `connectors`.  
+Note the provider takes properties (commonly called `prop` in react) `connectors`.  
 It is mandatory to initiate the web3 library we want to use. This makes `react-web3` agnostic of your
 client library.  
 Here, we pass the metamask connector previously initialized. This will allow us to connect our metaMask wallet. 
@@ -770,9 +769,9 @@ This is the metaMask object, allowing us to interact with the wallet.
   const { isActive, connector } = useWeb3React();
 ```
 
-We call the `activate` method from the connector to connect to the user wallet.  
-We can also provide the target blockchain information in parameter.  
-We already created a file exporting those informations for you.
+We call the `activate` method from the connector to connect to the user's wallet.  
+We can also provide the target blockchain information as a parameter.  
+We already created a file exporting those pieces of information for you.
 
 It should look like this
 
@@ -807,7 +806,7 @@ You should already have one so, let's go click our connect button.
 You should see a pop-up asking you to approve the connection to our website.
 If you accept, you should then see your address instead of the login button. 
 
-Awesome! Here, you have the "Web3" kind of login. You have the public identifier of your user !
+Awesome! Here, you have the "Web3" kind of login. You have the public identifier of your user!
 Isn't it a kind way to connect? 😁
 
 If you wonder what's under the button, you can look for **`Web3WalletButton` component**.  
@@ -827,7 +826,7 @@ Duration: 0:15:00
 For now, we implemented the connection with our wallet. That's already great,
 but we're here to interact with our smart contract right? Let's goooo 🧑‍💻
 
-The frontend, and the web3 library needs to know what is the structure of our contract. 
+The frontend and the web3 library need to know what is the structure of our contract. 
 This means:
 
 - the public data exposed,
@@ -974,10 +973,10 @@ Then, we have to store it. But on the blockchain, we pay for every storage we us
 want the mint to be overly expensive!
 
 Here, we have 2 solutions.  
-The first one: store our image in a traditional manner. Like an S3 bucket. But we want to create a 
+The first one: stores our image in an S3 bucket for example. But we want to create a 
 decentralized application! What happens to our NFT if the S3 is deleted? We have only data, but no 
 image attached to it. We will have a broken NFT.
-The second one: store it on IPFS, a decentralized storage. It seems a lot better, right? 😁 
+The second one: store it on IPFS, which is a decentralized storage. It seems a lot better, right? 😁 
 But IPFS has some issues too. It's a protocol, which means the user will have to install the protocol
 on his computer to interact with or use a gateway. Which is centralized 😅
 
