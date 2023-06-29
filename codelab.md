@@ -926,7 +926,7 @@ you got when you deployed your contract.
 For the abi, you can import it from our `contract` package:
 
 ```typescript
-import myEpicNft from "my-epic-nft/artifacts/contracts/MyEpicContract.sol/MyEpicSmartContract.json";
+import myEpicNft from "my-epic-nft/artifacts/contracts/MyEpicSmartContract.sol/MyEpicSmartContract.json";
 //                      ^- package name in the `package.json`
 ```
 
