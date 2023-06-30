@@ -668,19 +668,8 @@ We built for you the base components, you will just fill them. By doing that, we
 
 As we saw in the introduction, we will work on `app` package.
 
-First, let's start the front with `yarn start`. 
-The interface should open on `http://localhost:3000/`, and you already have a functional application
-to customize a duck, how cool is that?
+Before we start the application, we need to install some dependencies.
 
-What we want to do in this interface is:
-
-- Connect our wallet to be able to interact with the wallet,
-- Add a `mint` button to let the user create an NFT from his custom duck. 
-
-To interact with the blockchain, we need a few additional dependencies, let's install them,
-and then build some great stuff ✨
-
-In the `app` folder, do the following command:
 
 ```sh
 yarn add @web3-react/core @web3-react/injected-connector @web3-react/metamask ethers @ethersproject/providers 
@@ -692,9 +681,14 @@ Packages under `@web3-react/*` are bridges between react and client libraries su
 (we are using) or `web3` library. It gives us 
 friendly tools to get a reactive state in react components.
 
-Now you probably want to yell at us: "GIVE ME SOME CODE!". We're getting there, don't worry 😉
+Now, let's start the front with `yarn start`. 
+The interface should open on `http://localhost:3000/`, and you already have a functional application
+to customize a duck, how cool is that?
 
-From now, you can launch the app in development mode by running `yarn start` in `src/app`.
+What we want to do in this interface is:
+
+- Connect our wallet to be able to interact with the wallet,
+- Add a `mint` button to let the user create an NFT from his custom duck. 
 
 ## Configure your front to connect a Wallet 💰
 Duration: 0:25:00

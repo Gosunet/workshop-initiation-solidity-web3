@@ -465,20 +465,17 @@ Minted NFT #1
 <p>That&#39;s why we are now building a frontend. Not all the frontend, since we just want to build a web3 integration on top of the <a href="https://pimpmyduck.zenika.com/" target="_blank">existing CrytoDuck made but our Zenika Teammate</a>.</p>
 <p>The frontend is made in React, but don&#39;t worry if you don&#39;t know. We built for you the base components, you will just fill them. By doing that, we can focus on what really matters here: interacting with the blockchain ⛓</p>
 <p>As we saw in the introduction, we will work on <code>app</code> package.</p>
-<p>First, let&#39;s start the front with <code>yarn start</code>. The interface should open on <code>http://localhost:3000/</code>, and you already have a functional application to customize a duck, how cool is that?</p>
+<p>Before we start the application, we need to install some dependencies.</p>
+<pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector @web3-react/metamask ethers @ethersproject/providers 
+</code></pre>
+<p>Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.</p>
+<p>Packages under <code>@web3-react/*</code> are bridges between react and client libraries such <code>ethers</code> (we are using) or <code>web3</code> library. It gives us friendly tools to get a reactive state in react components.</p>
+<p>Now, let&#39;s start the front with <code>yarn start</code>. The interface should open on <code>http://localhost:3000/</code>, and you already have a functional application to customize a duck, how cool is that?</p>
 <p>What we want to do in this interface is:</p>
 <ul>
 <li>Connect our wallet to be able to interact with the wallet,</li>
 <li>Add a <code>mint</code> button to let the user create an NFT from his custom duck.</li>
 </ul>
-<p>To interact with the blockchain, we need a few additional dependencies, let&#39;s install them, and then build some great stuff ✨</p>
-<p>In the <code>app</code> folder, do the following command:</p>
-<pre><code language="language-sh" class="language-sh">yarn add @web3-react/core @web3-react/injected-connector @web3-react/metamask ethers @ethersproject/providers 
-</code></pre>
-<p>Those packages will be the tools we need to interact with the wallet, and by that, the blockchain.</p>
-<p>Packages under <code>@web3-react/*</code> are bridges between react and client libraries such <code>ethers</code> (we are using) or <code>web3</code> library. It gives us friendly tools to get a reactive state in react components.</p>
-<p>Now you probably want to yell at us: &#34;GIVE ME SOME CODE!&#34;. We&#39;re getting there, don&#39;t worry 😉</p>
-<p>From now, you can launch the app in development mode by running <code>yarn start</code> in <code>src/app</code>.</p>
 
 
       </google-codelab-step>
