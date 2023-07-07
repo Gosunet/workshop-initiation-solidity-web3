@@ -86,9 +86,9 @@ yarn hardhat
 
 Choose to create a new TypeScript project, then accept the following step.
 
-This will create folders:
+This will create:
 - `contracts`: folder for our solidity files,
-- `scripts`: a directory that contains scripts to handle deployment, run, ...
+- `scripts`: a folder that contains scripts to handle deployment, run, ...
 - `test`: unit test sources
 - `hardhat-config.js`: config file for Hardhat
 
@@ -194,7 +194,7 @@ contract MyEpicSmartContract {
     ...
 ```
 
-Then you can create your fonction 
+Then you can create your function 
 
 ```javascript
 function setName(string newName) {
@@ -209,8 +209,8 @@ In solidity, like in some other language, you need to set the visibility of your
 Here we want this method to be callable from outside our contract so we need to add the `public` keyword like that 
 
 ```javascript
-function setName(string x) public {
-        name = x;
+function setName(string newName) public {
+        name = newName;
 }
 ```
 
